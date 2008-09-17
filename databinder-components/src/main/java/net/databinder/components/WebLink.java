@@ -53,7 +53,7 @@ public class WebLink extends AbstractLink {
 	@Override
 	protected void onComponentTag(ComponentTag tag) {
 		if (isEnabled())
-			tag.put("href", Strings.replaceAll(getModelObjectAsString(), "&", "&amp;"));
+			tag.put("href", Strings.replaceAll(getDefaultModelObjectAsString(), "&", "&amp;"));
 		else
 			disableLink(tag);
 
@@ -62,6 +62,6 @@ public class WebLink extends AbstractLink {
 	
 	@Override
 	public boolean isEnabled() {
-		return getModelObject() != null;
+		return getDefaultModelObject() != null;
 	}
 }

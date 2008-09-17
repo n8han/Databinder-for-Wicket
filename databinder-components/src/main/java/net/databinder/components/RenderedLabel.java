@@ -167,7 +167,7 @@ public class RenderedLabel extends Image  {
 	 */
 	@Override
 	public boolean isVisible() {
-		return super.isVisible() && getModelObject() != null;
+		return super.isVisible() && getDefaultModelObject() != null;
 	}
 
 	/**
@@ -190,11 +190,11 @@ public class RenderedLabel extends Image  {
 		tag.put("width", resource.getWidth() );
 		tag.put("height", resource.getHeight() );
 
-		tag.put("alt", getModelObjectAsString());
+		tag.put("alt", getDefaultModelObjectAsString());
 	}
 
 	protected int getLabelHash() {
-		return getLabelHash(getModelObjectAsString(), font, color, backgroundColor, maxWidth);
+		return getLabelHash(getDefaultModelObjectAsString(), font, color, backgroundColor, maxWidth);
 	}
 
 	protected static int getLabelHash(String text, Font font, Color color, Color backgroundColor, Integer maxWidth) {
@@ -217,7 +217,7 @@ public class RenderedLabel extends Image  {
 			// Get model
 			// Dont call the getModel() that could initialize many inbetween completely useless models. 
 			//IModel model = current.getModel();
-			IModel model = current.getModel();
+			IModel model = current.getDefaultModel();
 
 			if (model instanceof IWrapModel)
 			{
@@ -312,7 +312,7 @@ public class RenderedLabel extends Image  {
 			color = label.getColor();
 			font = label.getFont();
 			maxWidth = label.getMaxWidth();
-			text = label.getModelObjectAsString();
+			text = label.getDefaultModelObjectAsString();
 			antiAliased = label.isAntiAliased();
 			invalidate();
 		}

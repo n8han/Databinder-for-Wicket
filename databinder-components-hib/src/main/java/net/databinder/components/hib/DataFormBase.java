@@ -13,12 +13,12 @@ import org.hibernate.StaleObjectStateException;
  * are committed only when no errors are displayed.
  * @author Nathan Hamblen
  */
-public class DataFormBase extends Form {
+public class DataFormBase<T> extends Form<T> {
 	private Object factoryKey;
 	public DataFormBase(String id) {
 		super(id);
 	}
-	public DataFormBase(final String id, IModel model)
+	public DataFormBase(final String id, IModel<T> model)
 	{
 		super(id, model);
 	}

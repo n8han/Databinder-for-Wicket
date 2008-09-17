@@ -99,7 +99,7 @@ public class DatabinderValidator extends AbstractValidator implements IValidator
 	
 	/** @return base object and property derived from this component */
 	private static ModelProp getModelProp(Component formComponent) {
-		IModel model = formComponent.getModel();
+		IModel model = formComponent.getDefaultModel();
 		ModelProp mp = new ModelProp();
 		if (model instanceof PropertyModel) {
 			PropertyModel propModel = (PropertyModel) model;

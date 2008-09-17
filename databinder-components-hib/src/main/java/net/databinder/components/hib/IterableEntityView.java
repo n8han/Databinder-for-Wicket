@@ -53,7 +53,7 @@ public abstract class IterableEntityView extends RefreshingView {
 	
 	@Override
 	protected final Iterator getItemModels() {
-		return new ModelIterator((Iterable)getModelObject());
+		return new ModelIterator((Iterable)getDefaultModelObject());
 	}
 	
 	/**

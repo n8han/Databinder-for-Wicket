@@ -44,7 +44,7 @@ public class PageSourceLink extends BookmarkablePageLink {
 		Page thisPage = getPage();
 		if (!getPageClass().isInstance(thisPage))
 			return true;
-		Object o = getPage().getModelObject();
+		Object o = getPage().getDefaultModelObject();
 		return o == null || !o.equals(getModelObject());
 	}
 	/** Calls setParameters() */

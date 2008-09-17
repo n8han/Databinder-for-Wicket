@@ -91,14 +91,15 @@ public class DataPanel extends Panel {
 	 * @return this panel, for chaining
 	 */
 	protected DataPanel setPersistentObjectModel(HibernateObjectModel model) {
-		setModel(new BoundCompoundPropertyModel(model));
+		setDefaultModel(new BoundCompoundPropertyModel(model));
 		return this;
 	}
 
 	/**
 	 * @return this panel's model for binding components to expressions.
 	 */
+	@Deprecated
 	protected BoundCompoundPropertyModel getBindingModel() {
-		return (BoundCompoundPropertyModel) getModel();
+		return (BoundCompoundPropertyModel) getDefaultModel();
 	}
 }

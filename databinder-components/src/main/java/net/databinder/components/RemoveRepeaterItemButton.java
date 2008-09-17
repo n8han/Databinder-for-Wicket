@@ -13,7 +13,7 @@ public class RemoveRepeaterItemButton extends RepeaterItemButton {
    
    @Override
    public void onSubmit() {
-      Collection c = (Collection) getView().getModelObject();
+      Collection c = (Collection) getView().getDefaultModelObject();
       if (c != null) {
          getView().modelChanging();
          // depends on correct equals()!

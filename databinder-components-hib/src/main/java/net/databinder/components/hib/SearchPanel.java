@@ -6,7 +6,7 @@ import net.databinder.models.hib.CriteriaBuilder;
 import net.databinder.models.hib.PropertyQueryBinder;
 import net.databinder.models.hib.QueryBinder;
 
-import org.apache.wicket.Component;
+import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -49,8 +49,8 @@ public abstract class SearchPanel extends Panel {
 	
 	@Override
 	/** Sets model to search component. */
-	public Component setModel(IModel model) {
-		return search.setModel(model);
+	public MarkupContainer setDefaultModel(IModel model) {
+		return search.setDefaultModel(model);
 	}
 	
 	/**
@@ -94,7 +94,7 @@ public abstract class SearchPanel extends Panel {
 	public CriteriaBuilder getCriteriaBuilder(final MatchMode matchMode, final String... searchProperty) {
 		return new CriteriaBuilder() {
 			public void build(Criteria criteria) {
-				String search = (String) getModelObject();
+				String search = (String) getDefaultModelObject();
 				if (search != null) {
 					Disjunction d = Restrictions.disjunction();
 					for (String prop : searchProperty)
@@ -107,7 +107,7 @@ public abstract class SearchPanel extends Panel {
 	
 	/** @return search string bracketed by the % wildcard */
 	public String getSearch() {
-		return getModelObject() == null ? null : "%" + getModelObject() + "%";
+		return getDefaultModelObject() == null ? null : "%" + getDefaultModelObject() + "%";
 	}
 	
 	/** Form with AJAX components and their AjaxCells. */
@@ -117,7 +117,7 @@ public abstract class SearchPanel extends Panel {
 
 			final AjaxCell searchWrap = new AjaxCell("searchWrap");
 			add(searchWrap);
-			search = new TextField("searchInput", SearchPanel.this.getModel());
+			search = new TextField("searchInput", SearchPanel.this.getDefaultModel());
 			search.setOutputMarkupId(true);
 			searchWrap.add(search);
 
@@ -126,14 +126,14 @@ public abstract class SearchPanel extends Panel {
 			final AjaxLink clearLink = new AjaxLink("clearLink") {
 				/** Clear field and register updates. */
 				public void onClick(AjaxRequestTarget target) {
-					SearchPanel.this.setModelObject(null);
+					SearchPanel.this.setDefaultModelObject(null);
 					target.addComponent(searchWrap);
 					target.addComponent(clearWrap);
 					SearchPanel.this.onUpdate(target);
 				}
 				/** Hide when search is blank. */
 				public boolean isVisible() {
-					return SearchPanel.this.getModelObject() != null;
+					return SearchPanel.this.getDefaultModelObject() != null;
 				}
 			};
 			clearLink.setOutputMarkupId(true);

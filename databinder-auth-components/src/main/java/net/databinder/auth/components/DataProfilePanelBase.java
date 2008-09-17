@@ -184,7 +184,7 @@ public abstract class DataProfilePanelBase extends Panel {
 		protected void onValidate(IValidatable validatable) {
 			String username = (String) validatable.getValue();
 			if (username != null && !isAvailable(username)) {
-				Map<String, String> m = new HashMap<String, String>(1);
+				Map<String, Object> m = new HashMap<String, Object>(1);
 				m.put("username", username);
 				error(validatable,"data.auth.username.taken",  m);
 			}

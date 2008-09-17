@@ -26,14 +26,14 @@ public class ModelSourceLink extends Link {
 		if (!target.isVisible()) 
 			return true;
 		
-		return !getModelObject().equals(target.getModelObject());
+		return !getModelObject().equals(target.getDefaultModelObject());
 	}
 	/**
 	 * Set model of target, and set target to visible in case it has hide before use behavior.
 	 */
 	@Override
 	public void onClick() {
-		target.setModelObject(getModelObject());
+		target.setDefaultModelObject(getModelObject());
 		target.setVisible(true);
 	}
 }

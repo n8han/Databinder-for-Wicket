@@ -158,7 +158,7 @@ public class DataForm extends DataFormBase {
 		IModel model = getModel();
 		Component cur = this;
 		while (cur != null) {
-			model = cur.getModel();
+			model = cur.getDefaultModel();
 			if (model != null && model instanceof CompoundPropertyModel)
 				return (CompoundPropertyModel) model;
 			cur = cur.getParent();

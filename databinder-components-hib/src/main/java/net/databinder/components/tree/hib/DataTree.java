@@ -41,7 +41,7 @@ public abstract class DataTree<T extends DataTreeObject<T>> extends BaseTree {
 		super(id);
 		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(rootModel);
 		populateTree(rootNode, ((T)rootModel.getObject()).getChildren());
-		setModel(new Model(new DefaultTreeModel(rootNode)));
+		setDefaultModel(new Model(new DefaultTreeModel(rootNode)));
 	}
 	
 	/**
@@ -55,7 +55,7 @@ public abstract class DataTree<T extends DataTreeObject<T>> extends BaseTree {
 		setRootLess(true);
 		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(topLevelModel);
 		populateTree(rootNode, (List<T>)topLevelModel.getObject());
-		setModel(new Model(new DefaultTreeModel(rootNode)));
+		setDefaultModel(new Model(new DefaultTreeModel(rootNode)));
 	}
 	
 	/**
@@ -75,7 +75,7 @@ public abstract class DataTree<T extends DataTreeObject<T>> extends BaseTree {
 		DefaultMutableTreeNode newRootNode = new DefaultMutableTreeNode(
 				new HibernateObjectModel(newObject));
 		TreeModel treeModel = new DefaultTreeModel(newRootNode);
-		setModel(new Model((Serializable) treeModel));
+		setDefaultModel(new Model((Serializable) treeModel));
 		repaint(target);
 		return newRootNode; 
 	}
@@ -119,7 +119,7 @@ public abstract class DataTree<T extends DataTreeObject<T>> extends BaseTree {
 	 * @return the root node of the tree
 	 */
 	public DefaultMutableTreeNode getRootNode() {
-		DefaultTreeModel treeModel = (DefaultTreeModel) getModelObject();
+		DefaultTreeModel treeModel = (DefaultTreeModel) getDefaultModelObject();
 		if (treeModel.getRoot() == null) {
 			return null;
 		}

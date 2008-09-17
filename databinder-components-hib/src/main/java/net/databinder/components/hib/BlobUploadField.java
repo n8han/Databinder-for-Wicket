@@ -19,9 +19,11 @@
 package net.databinder.components.hib;
 
 import java.io.IOException;
+import java.sql.Blob;
 
 import org.hibernate.Hibernate;
 
+import org.apache.wicket.markup.html.form.FormComponentPanel;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.model.IModel;
 
@@ -32,13 +34,16 @@ import org.apache.wicket.model.IModel;
  * upload component.
  * @author Nathan Hamblen
  */
-public class BlobUploadField extends FileUploadField {
+public class BlobUploadField extends FormComponentPanel<Blob> {
+	
+	private FileUploadField uploadField;
+	
 	/**
 	 * Costructor to be used with compound property model.
 	 * @param id component id, should resolve to a stream property
 	 */
 	public BlobUploadField(String id) {
-		super(id);
+		super(id, null);
 	}
 
 	/**
@@ -46,7 +51,7 @@ public class BlobUploadField extends FileUploadField {
 	 * @param id component id
 	 * @param model should resolve to a stream setter
 	 */
-	public BlobUploadField(String id, IModel model) {
+	public BlobUploadField(String id, IModel<Blob> model) {
 		super(id, model);
 	}
 
@@ -56,8 +61,9 @@ public class BlobUploadField extends FileUploadField {
 	@Override
 	public void updateModel() {
 		try {
-			if (getFileUpload() != null) {
-				setModelObject(Hibernate.createBlob(getFileUpload().getInputStream()));
+			if (uploadField.getFileUpload() != null) {
+				setModelObject(Hibernate.createBlob(
+					uploadField.getFileUpload().getInputStream()));
 				onUpdated();
 			}
 		} catch (IOException e) {

@@ -115,7 +115,7 @@ public class RSAPasswordTextField extends PasswordTextField implements IHeaderCo
 	}
 	
 	@Override
-	protected Object convertValue(String[] value) throws ConversionException {
+	protected String convertValue(String[] value) throws ConversionException {
 		String enc = (String) super.convertValue(value);
 		if (enc == null)
 			return null;
