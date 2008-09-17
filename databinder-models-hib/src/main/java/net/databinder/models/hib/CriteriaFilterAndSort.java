@@ -30,9 +30,9 @@ import java.util.regex.Pattern;
 import org.apache.wicket.Application;
 import org.apache.wicket.Session;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.IFilterStateLocator;
+import org.apache.wicket.util.convert.ConversionException;
 import org.apache.wicket.util.lang.PropertyResolver;
 import org.apache.wicket.util.lang.PropertyResolverConverter;
-import org.apache.wicket.util.convert.ConversionException;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Disjunction;
@@ -65,7 +65,7 @@ public class CriteriaFilterAndSort extends CriteriaBuildAndSort implements IFilt
     // whitespace, a qualifier, a number surrounded by whitespace
     private Pattern pattern = Pattern.compile("^(\\s+)?([><]=?)(\\s+)?(.*)(\\s+)?");
 
-    private Map<String, String> filterMap = new HashMap();
+    private Map<String, String> filterMap = new HashMap<String, String>();
 
     private Object bean;
 
@@ -137,7 +137,8 @@ public class CriteriaFilterAndSort extends CriteriaBuildAndSort implements IFilt
         return filterMap;
     }
 
-    public void setFilterState(Object filterMap) {
+    @SuppressWarnings("unchecked")
+	public void setFilterState(Object filterMap) {
         this.filterMap = (Map) filterMap;
     }
 

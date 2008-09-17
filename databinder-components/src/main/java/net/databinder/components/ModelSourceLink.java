@@ -8,7 +8,7 @@ import org.apache.wicket.model.IModel;
  * Links to set the model of a target component.
  * @author Nathan Hamblen
  */
-public class ModelSourceLink extends Link {
+public class ModelSourceLink<T> extends Link<T> {
 	private Component target;
 	/**
 	 * Construct link to set model of component.
@@ -16,7 +16,7 @@ public class ModelSourceLink extends Link {
 	 * @param target set model of this component
 	 * @param model the model to set
 	 */
-	public ModelSourceLink(String id, Component target, IModel model) {
+	public ModelSourceLink(String id, Component target, IModel<T> model) {
 		super(id, model);
 		this.target = target;
 	}

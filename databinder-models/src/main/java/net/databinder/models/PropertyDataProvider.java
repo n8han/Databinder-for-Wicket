@@ -18,7 +18,7 @@
  */
 package net.databinder.models;
 
-import org.apache.wicket.markup.repeater.data.DefaultDataProvider;
+import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 
@@ -27,7 +27,7 @@ import org.apache.wicket.model.IModel;
  * CompoundPropertyModel.
  * @author Nathan Hamblen
  */
-public abstract class PropertyDataProvider extends DefaultDataProvider {
+public abstract class PropertyDataProvider<T> implements IDataProvider<T> {
 
 	/** Controls wrapping with a compound property model. */
 	private boolean wrapWithPropertyModel = true;
@@ -43,14 +43,15 @@ public abstract class PropertyDataProvider extends DefaultDataProvider {
 	 * @param object object DataView would like to wrap
 	 * @return object wrapped in a peristent model and possibly CompoundPropertyModel
 	 */
-	public IModel model(Object object) {
-		IModel model = dataModel(object);
+	public IModel<T> model(T object) {
+		IModel<T> model = dataModel(object);
 		if (wrapWithPropertyModel)
-			model = new CompoundPropertyModel(model);
+			model = new CompoundPropertyModel<T>(model);
 		return model;
 	}
 	
 	/** Wrap in appropriate persistent model in subclass */
-	protected abstract IModel dataModel(Object object);
-
+	protected abstract IModel<T> dataModel(T object);
+	
+	public void detach() { }
 }

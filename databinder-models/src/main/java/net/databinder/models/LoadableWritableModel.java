@@ -19,17 +19,16 @@
 
 package net.databinder.models;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.model.IModel;
 
 /**
  * Adaptation of Wicket's LoadableDetachableModel that does not extend a
  * read-only model and permits changing the underlying object.
  */
-public abstract class LoadableWritableModel  implements IModel {
+public abstract class LoadableWritableModel<T> implements IModel<T> {
 
 	private transient boolean attached = false;
-	private transient Object tempModelObject;
+	private transient T tempModelObject;
 
 	public LoadableWritableModel() {
 	}
@@ -42,7 +41,7 @@ public abstract class LoadableWritableModel  implements IModel {
 		}
 	}
 
-	public Object getObject() {
+	public T getObject() {
 		if (!attached) {
 			attached = true;
 			tempModelObject = load();
@@ -61,7 +60,7 @@ public abstract class LoadableWritableModel  implements IModel {
 	 * (possibly expensive) call to load().
 	 * @param object
 	 */
-	protected void setTempModelObject(Object object) {
+	protected void setTempModelObject(T object) {
 		attached = true;
 		tempModelObject = object;
 	}
@@ -73,7 +72,7 @@ public abstract class LoadableWritableModel  implements IModel {
 		return sb.toString();
 	}
 
-	protected abstract Object load();
+	protected abstract T load();
 
 	/**
 	 * Called when attaching, after load().

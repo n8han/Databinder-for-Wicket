@@ -42,13 +42,13 @@ import org.hibernate.proxy.HibernateProxyHelper;
  * object, or null.
  * @author Nathan Hamblen
  */
-public class HibernateObjectModel extends LoadableWritableModel implements BindingModel {
+public class HibernateObjectModel<T> extends LoadableWritableModel<T> implements BindingModel {
 	private Class objectClass;
 	private Serializable objectId;
 	private QueryBuilder queryBuilder;
 	private CriteriaBuilder criteriaBuilder;
 	/** May store unsaved objects between requests. */
-	private Serializable retainedObject;
+	private T retainedObject;
 	/** Enable retaining unsaved objects between requests. */
 	private boolean retainUnsaved = true;
 	
@@ -80,7 +80,7 @@ public class HibernateObjectModel extends LoadableWritableModel implements Bindi
 	 * Construct with an entity.
 	 * @param persistentObject should be previously persisted or Serializable for temp storage.
 	 */
-	public HibernateObjectModel(Object persistentObject) {
+	public HibernateObjectModel(T persistentObject) {
 		setObject(persistentObject);
 	}
 
@@ -146,7 +146,7 @@ public class HibernateObjectModel extends LoadableWritableModel implements Bindi
 	 * are removed if present.
 	 * @param object must be an entity contained in the current Hibernate session, or Serializable, or null
 	 */
-	public void setObject(Object object) {
+	public void setObject(T object) {
 		unbind();	// clear everything but class, name
 		objectClass = null;
 
@@ -157,7 +157,7 @@ public class HibernateObjectModel extends LoadableWritableModel implements Bindi
 			if (sess.contains(object))
 				objectId = sess.getIdentifier(object);
 			else if (retainUnsaved)
-					retainedObject = (Serializable) object;
+					retainedObject = (T) object;
 			setTempModelObject(object);	// skip calling load later
 		}
 	}
@@ -165,21 +165,15 @@ public class HibernateObjectModel extends LoadableWritableModel implements Bindi
 	public Serializable getIdentifier() {
 		return Databinder.getHibernateSession(factoryKey).getIdentifier(getObject());
 	}
-	
-	/**
-	 * @deprecated use {@link #unbind()}
-	 */
-	public void clearPersistentObject() {
-		unbind();
-	}
 
 	/**
 	 * Load the object through Hibernate, contruct a new instance if it is not
 	 * bound to an id, or use unsaved retained object. Returns null if no
 	 * criteria needed to load or construct an object are available.
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	protected Object load() {
+	protected T load() {
 		if (objectClass == null && queryBuilder == null)
 			return null;	// can't load without one of these
 		try {
@@ -187,12 +181,12 @@ public class HibernateObjectModel extends LoadableWritableModel implements Bindi
 				if (retainUnsaved && retainedObject != null)
 					return retainedObject;
 				else if (retainUnsaved) try {
-					return retainedObject = (Serializable) objectClass.newInstance();
+					return retainedObject = (T) objectClass.newInstance();
 				} catch (ClassCastException e) {
 					throw new WicketRuntimeException("Unsaved entity must be Serializable or retainUnsaved set to false; see HibernateObjectModel javadocs.");
 				}
 				else
-					return objectClass.newInstance();
+					return (T) objectClass.newInstance();
 			}
 		} catch (ClassCastException e) {
 			throw new RuntimeException("Retaining unsaved model objects requires that they be Serializable.", e);
@@ -201,16 +195,16 @@ public class HibernateObjectModel extends LoadableWritableModel implements Bindi
 		}
 		Session sess = Databinder.getHibernateSession(factoryKey);
 		if (objectId != null) {
-			return sess.get(objectClass, objectId);
+			return (T) sess.get(objectClass, objectId);
 		}
 
 		if(criteriaBuilder != null) {
 			Criteria criteria = sess.createCriteria(objectClass);
 			criteriaBuilder.build(criteria);
-			return criteria.uniqueResult();
+			return (T) criteria.uniqueResult();
 		}
 
-		return queryBuilder.build(sess).uniqueResult();
+		return (T) queryBuilder.build(sess).uniqueResult();
 	}
 
 	/**

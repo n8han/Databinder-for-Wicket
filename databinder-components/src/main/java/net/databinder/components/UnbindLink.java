@@ -11,7 +11,7 @@ import org.apache.wicket.markup.html.link.Link;
  * updating one.
  * @see BindingModel
  */
-public class UnbindLink extends Link {
+public class UnbindLink<T> extends Link<T> {
 	private Component target;
 	
 	/**
@@ -19,7 +19,7 @@ public class UnbindLink extends Link {
 	 * @param target component to be notified when unbinding model
 	 * @param model
 	 */
-	public UnbindLink(String id, Component target, BindingModel model) {
+	public UnbindLink(String id, Component target, BindingModel<T> model) {
 		super(id, model);
 		this.target = target;
 	}

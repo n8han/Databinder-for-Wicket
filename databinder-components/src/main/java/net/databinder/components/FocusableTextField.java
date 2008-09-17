@@ -19,7 +19,6 @@
 package net.databinder.components;
 
 import org.apache.wicket.markup.ComponentTag;
-import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.internal.HtmlHeaderContainer;
 import org.apache.wicket.model.IModel;
@@ -28,14 +27,14 @@ import org.apache.wicket.model.IModel;
  * TextField that can be told to focus itself on the next request.  Works in conjunction with 
  * the onload handler. 
  */
-public class FocusableTextField extends TextField {
+public class FocusableTextField<T> extends TextField<T> {
 	private boolean wantsFocus = false;
 
 	/**
 	 * 	@param id Wicket id
 	 * @param model text field model
 	 */
-	public FocusableTextField(String id, IModel model) {
+	public FocusableTextField(String id, IModel<T> model) {
 		super (id, model);
 		add(ScriptLink.headerContributor(FocusableTextField.class));
 	}
@@ -44,22 +43,7 @@ public class FocusableTextField extends TextField {
 	 * @param id Wicket id
 	 */
 	public FocusableTextField(String id) {
-		this(id, (IModel) null);
-	}
-
-	/**
-	 * Page parameter no longer necessary; use other constructor.
-	 * @deprecated
-	 */
-	public FocusableTextField(String id, IModel model, WebPage page) {
-		this(id, model);
-	}
-	/**
-	 * Page parameter no longer necessary; use other constructor.
-	 * @deprecated
-	 */
-	public FocusableTextField(String id, WebPage page) {
-		this(id);
+		this(id, (IModel<T>) null);
 	}
 	
 	@Override

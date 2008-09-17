@@ -20,11 +20,12 @@ package net.databinder.models;
 
 import org.apache.wicket.model.IModel;
 
+
 /**
  * Model associated with an object that can be "bound" to persistent storage.
  * @author Nathan Hamblen
  */
-public interface BindingModel extends IModel {
+public interface BindingModel<T> extends IModel<T> {
 	/**
 	 * @return true if object is bound to persistent storage
 	 */

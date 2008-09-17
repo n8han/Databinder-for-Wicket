@@ -38,7 +38,7 @@ import org.hibernate.criterion.Projections;
  * other time you do not want a compound property model.
  * @author Nathan Hamblen
  */
-public class HibernateProvider extends PropertyDataProvider  {
+public class HibernateProvider<T> extends PropertyDataProvider<T> {
 	private Class objectClass;
 	private OrderingCriteriaBuilder criteriaBuilder;
 	private QueryBuilder queryBuilder, countQueryBuilder;
@@ -157,7 +157,8 @@ public class HibernateProvider extends PropertyDataProvider  {
 	/**
 	 * It should not normally be necessary to override (or call) this default implementation.
 	 */
-	public Iterator iterator(int first, int count) {
+	@SuppressWarnings("unchecked")
+	public Iterator<T> iterator(int first, int count) {
 		Session sess =  Databinder.getHibernateSession(factoryKey);
 		
 		if(queryBuilder != null) {
@@ -200,8 +201,8 @@ public class HibernateProvider extends PropertyDataProvider  {
 
 
 	@Override
-	protected IModel dataModel(Object object) {
-		return new HibernateObjectModel(object);
+	protected IModel<T> dataModel(T object) {
+		return new HibernateObjectModel<T>(object);
 	}
 	
 	/** does nothing */
