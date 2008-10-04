@@ -42,7 +42,7 @@ import org.hibernate.proxy.HibernateProxyHelper;
  * object, or null.
  * @author Nathan Hamblen
  */
-public class HibernateObjectModel<T> extends LoadableWritableModel<T> implements BindingModel {
+public class HibernateObjectModel<T> extends LoadableWritableModel<T> implements BindingModel<T> {
 	private Class objectClass;
 	private Serializable objectId;
 	private QueryBuilder queryBuilder;

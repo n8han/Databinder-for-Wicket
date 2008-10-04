@@ -43,7 +43,7 @@ import org.hibernate.Session;
  * {@link DataFormBase}.</p>
  * @author Nathan Hamblen
  */
-public class DataForm extends DataFormBase {
+public class DataForm<T> extends DataFormBase<T> {
 	/**
 	 * Retains the persistent object's version field (if it has one) between
 	 * requests to detect editing conflicts between users.
@@ -59,12 +59,12 @@ public class DataForm extends DataFormBase {
 	 * @param modelClass for the persistent object
 	 * @see HibernateObjectModel#setRetainUnsaved(boolean)
 	 */
-	public DataForm(String id, Class modelClass) {
-		super(id, new CompoundPropertyModel(new HibernateObjectModel(modelClass)));
+	public DataForm(String id, Class<T> modelClass) {
+		super(id, new CompoundPropertyModel<T>(new HibernateObjectModel<T>(modelClass)));
 	}
 
-	public DataForm(String id, HibernateObjectModel model) {
-		super(id, new CompoundPropertyModel(model));
+	public DataForm(String id, HibernateObjectModel<T> model) {
+		super(id, new CompoundPropertyModel<T>(model));
 		setFactoryKey(model.getFactoryKey());
 	}
 
@@ -74,8 +74,8 @@ public class DataForm extends DataFormBase {
 	 * @param modelClass for the persistent object
 	 * @param persistentObjectId id of the persistent object
 	 */
-	public DataForm(String id, Class modelClass, Serializable persistentObjectId) {
-		super(id, new CompoundPropertyModel(new HibernateObjectModel(modelClass, persistentObjectId)));
+	public DataForm(String id, Class<T> modelClass, Serializable persistentObjectId) {
+		super(id, new CompoundPropertyModel<T>(new HibernateObjectModel<T>(modelClass, persistentObjectId)));
 	}
 
 	/**
@@ -101,8 +101,8 @@ public class DataForm extends DataFormBase {
 	/**
 	 * @return the single persistent model for this form
 	 */
-	public HibernateObjectModel getPersistentObjectModel() {
-		return (HibernateObjectModel) getCompoundModel().getChainedModel();
+	public HibernateObjectModel<T> getPersistentObjectModel() {
+		return (HibernateObjectModel<T>) getCompoundModel().getChainedModel();
 	}
 
 	/**
@@ -110,7 +110,7 @@ public class DataForm extends DataFormBase {
 	 * @param object  to attach to this form
 	 * @return this form, for chaining
 	 */
-	public DataForm setPersistentObject(Object object) {
+	public DataForm setPersistentObject(T object) {
 		getPersistentObjectModel().setObject(object);
 		modelChanged();
 		return this;
