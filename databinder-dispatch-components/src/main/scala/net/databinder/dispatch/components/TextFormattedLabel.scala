@@ -21,9 +21,9 @@ class TextFormattedLabel(id: String, converter: TextFormatConverter) extends Lab
     this(id, new TextFormatConverter(format))
   }
 
-  def this(id: String, model: IModel, format: => TextFormat) = {
+  def this(id: String, model: IModel[_], format: => TextFormat) = {
     this(id, format)
-    setModel(model)
+    setDefaultModel(model)
   }
 
   def this(id: String, code: Int) = {
@@ -32,7 +32,7 @@ class TextFormattedLabel(id: String, converter: TextFormatConverter) extends Lab
   
   setEscapeModelStrings(false)
 
-  override def getConverter(cl: Class[T] forSome {type T}) = converter
+  override def getConverter[T](cl: Class[T]): IConverter[T] = converter.asInstanceOf[IConverter[T]]
 }
 
 abstract class TextFormat(val code: Int, val path_name: String)

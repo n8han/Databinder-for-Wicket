@@ -22,6 +22,7 @@ import java.net.URI
 
 import javax.servlet.http.HttpServletRequest
 
+import org.apache.wicket.Component
 import org.apache.wicket.ResourceReference
 import org.apache.wicket.markup.html.WebPage
 import org.apache.wicket.markup.html.basic.Label
@@ -36,18 +37,20 @@ import org.apache.wicket.protocol.http.WebRequest
  */
 class ConnectionErrorPage(e: Throwable) extends WebPage {
 
-  add(new Label("error", new Model(e.getMessage())))
-  add(new Link("retry") {
+  def << (c: Component) = add(Array(c))
+
+  this << new Label("error", new Model(e.getMessage()))
+  this << new Link("retry") {
     override def onClick() { continueToOriginalDestination() }
-  })
-  add(new ResourceLink("script", ConnectionErrorPage.scriptFile))
+  }
+  this << new ResourceLink("script", ConnectionErrorPage.scriptFile)
 
   def req = getRequest.asInstanceOf[WebRequest].getHttpServletRequest
   val full= URI.create(req.getRequestURL().toString())
   val path = new Model(full.resolve(req.getContextPath() + "/" +
     urlFor(ConnectionErrorPage.scriptFile)))
 
-  add(new Label("href", path).setRenderBodyOnly(true))
+  this << new Label("href", path).setRenderBodyOnly(true)
 }
 
 object ConnectionErrorPage {

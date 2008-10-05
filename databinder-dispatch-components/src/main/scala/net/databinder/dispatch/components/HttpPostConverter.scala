@@ -17,16 +17,16 @@ import net.sf.ehcache.Element
 
 import net.databinder.dispatch.Http
 
-abstract class HttpPostConverter extends AbstractConverter {
+abstract class HttpPostConverter extends AbstractConverter[String] {
 
   def service = new Http("localhost", 8180)
   def path_name: String
   
-  def convertToObject(value: String, locale: Locale): Object = null
+  def convertToObject(value: String, locale: Locale): String = null
   
   def getTargetType = classOf[String]
 
-  override def convertToString(source: Object, locale: Locale) = try {
+  override def convertToString(source: String, locale: Locale) = try {
     HttpPostConverter.cache(path_name, source.hashCode()) {
       (service("/" + path_name) << "input" -> source).as_str
     }  
