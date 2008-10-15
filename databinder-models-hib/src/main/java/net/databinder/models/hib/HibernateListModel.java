@@ -19,6 +19,8 @@
 
 package net.databinder.models.hib;
 
+import java.util.List;
+
 import net.databinder.hib.Databinder;
 
 import org.apache.wicket.model.LoadableDetachableModel;
@@ -31,7 +33,7 @@ import org.hibernate.Session;
  * to fill ListModel and PropertyListModel components with rows from a database.
  * @author Nathan Hamblen
  */
-public class HibernateListModel extends LoadableDetachableModel {
+public class HibernateListModel<T> extends LoadableDetachableModel<List<T>> {
 	private QueryBuilder queryBuilder;
 	private Class objectClass;
 	private CriteriaBuilder criteriaBuilder;
@@ -113,8 +115,9 @@ public class HibernateListModel extends LoadableDetachableModel {
 	/**
 	 * Load the object List through Hibernate, binding query parameters if available.
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	protected Object load() {
+	protected List<T> load() {
 		Session session = Databinder.getHibernateSession(factoryKey);
 		if (queryBuilder != null) {
 			return queryBuilder.build(session).list();
