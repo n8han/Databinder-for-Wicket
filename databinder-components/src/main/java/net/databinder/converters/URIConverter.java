@@ -31,13 +31,13 @@ import org.apache.wicket.util.string.Strings;
  * Convert an object to a java.net.URI.
  * @author Nathan Hamblen
  */
-public class URIConverter extends AbstractConverter {
+public class URIConverter extends AbstractConverter<URI> {
 
 	@Override
-	protected Class getTargetType() {
+	protected Class<URI> getTargetType() {
 		return URI.class;
 	}
-	public Object convertToObject(String value, Locale locale) {
+	public URI convertToObject(String value, Locale locale) {
 		try {
 			return Strings.isEmpty(value) ? null : new URI(value);
 		} catch (URISyntaxException e) {

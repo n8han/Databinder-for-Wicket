@@ -27,12 +27,12 @@ public class UnbindLink<T> extends Link<T> {
 	@Override
 	public void onClick() {
 		target.modelChanging();
-		((BindingModel)getModel()).unbind();
+		((BindingModel<T>)getModel()).unbind();
 		target.modelChanged();
 	}
 	/** @return true if model is bound */
 	@Override
 	public boolean isEnabled() {
-		return ((BindingModel)getModel()).isBound();
+		return ((BindingModel<T>)getModel()).isBound();
 	}
 }

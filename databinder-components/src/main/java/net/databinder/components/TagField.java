@@ -50,25 +50,25 @@ public class TagField extends Panel {
 	/** @param textarea true to generate a text area */
 	public TagField(String id, IModel model, boolean textarea) {
 		super(id, model);
-		IModel tagModel = new IModel() {
+		IModel<String> tagModel = new IModel<String>() {
 			public void detach() {}
 			@SuppressWarnings("unchecked")
-			public Object getObject() {
+			public String getObject() {
 				Collection<String> tags = (Collection<String>) TagField.this.getDefaultModelObject();
 				if (tags == null) return null;
 				return Strings.join(", ",  tags.toArray(new String[tags.size()]));
 			}
-			public void setObject(Object object) {
+			public void setObject(String object) {
 				if (object == null)
 					TagField.this.setDefaultModelObject(new HashSet<String>());
 				else {
-					String value = ((String) object).toLowerCase();
+					String value = object.toLowerCase();
 					String[] tagstrs = value.split(" *, *,* *"); // also consumes empty ' ,  ,' tags
 					TagField.this.setDefaultModelObject(new HashSet<String>(Arrays.asList(tagstrs)));
 				}
 			}
 		};
-		add(new TextField("field", tagModel).setVisible(!textarea));
-		add(new TextArea("area", tagModel).setVisible(textarea));
+		add(new TextField<String>("field", tagModel).setVisible(!textarea));
+		add(new TextArea<String>("area", tagModel).setVisible(textarea));
 	}
 }

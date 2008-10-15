@@ -32,6 +32,7 @@ public class TextileLabel extends Label {
 		setEscapeModelStrings(false); // since the contents will be in HTML
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public IConverter getConverter(Class type) {
 		return new TextileConverter();

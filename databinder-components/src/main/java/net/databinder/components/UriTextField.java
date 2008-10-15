@@ -18,6 +18,7 @@
  */
 package net.databinder.components;
 
+import java.net.URI;
 import java.util.Locale;
 
 import net.databinder.converters.URIConverter;
@@ -33,7 +34,7 @@ import org.apache.wicket.util.string.Strings;
  * "http://" and if unchanged the model will be left null. 
  * @author Nathan Hamblen
  */
-public class UriTextField extends TextField {
+public class UriTextField extends TextField<URI> {
 	
 	private String scheme;
 	
@@ -57,11 +58,12 @@ public class UriTextField extends TextField {
 	}
 	
 	/** @return specialized converter that equates a default string value to null */
+	@SuppressWarnings("unchecked")
 	@Override
 	public IConverter getConverter(Class type) {
 		return new URIConverter() {
 			@Override
-			public Object convertToObject(String value, Locale locale) {
+			public URI convertToObject(String value, Locale locale) {
 				if (value == null || value.equals(defaultValue()))
 						return null;
 				return super.convertToObject(value, locale);

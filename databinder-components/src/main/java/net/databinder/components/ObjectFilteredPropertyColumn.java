@@ -18,6 +18,8 @@
  */
 package net.databinder.components;
 
+import java.util.List;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.ChoiceFilter;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.ChoiceFilteredPropertyColumn;
@@ -31,17 +33,17 @@ import org.apache.wicket.model.PropertyModel;
  * DataTable property filter column that works with joined entities instead of string properties.
  * @author Mark Southern
  */
-public class ObjectFilteredPropertyColumn extends ChoiceFilteredPropertyColumn {
-	private ChoiceRenderer choiceRenderer;
+public class ObjectFilteredPropertyColumn<T> extends ChoiceFilteredPropertyColumn<T> {
+	private ChoiceRenderer<T> choiceRenderer;
 	private String displayProperty;
 
-	public ObjectFilteredPropertyColumn(IModel displayModel, String sortProperty, String displayProperty, String propertyExpression, String filterLabelProperty, IModel filterChoices) {
+	public ObjectFilteredPropertyColumn(IModel<String> displayModel, String sortProperty, String displayProperty, String propertyExpression, String filterLabelProperty, IModel<List<? extends T>> filterChoices) {
 		super(displayModel,sortProperty,propertyExpression,filterChoices);
-		choiceRenderer = new ChoiceRenderer(filterLabelProperty);
+		choiceRenderer = new ChoiceRenderer<T>(filterLabelProperty);
 		this.displayProperty = displayProperty;
 	}
 
-	protected IChoiceRenderer getChoiceRenderer() {
+	protected IChoiceRenderer<T> getChoiceRenderer() {
 		return choiceRenderer;
 	}
 

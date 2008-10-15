@@ -210,7 +210,7 @@ public class RenderedLabel extends Image  {
 
 	/** Restores  compound model resolution that is disabled in  the Image superclass. */
 	@Override
-	protected IModel initModel() {
+	protected IModel<?> initModel() {
 		// Search parents for CompoundPropertyModel
 		for (Component current = getParent(); current != null; current = current.getParent())
 		{
