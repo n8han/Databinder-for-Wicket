@@ -44,7 +44,7 @@ public class AuthDataSession extends AuthDataSessionBase {
 	}
 	
 	@Override
-	public IModel createUserModel(DataUser user) {
-		return new HibernateObjectModel(user);
+	public IModel<DataUser> createUserModel(DataUser user) {
+		return new HibernateObjectModel<DataUser>(user);
 	}
 }

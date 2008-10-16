@@ -66,7 +66,7 @@ import org.apache.wicket.validation.validator.StringValidator;
 public abstract class DataProfilePanelBase extends Panel {
 	private ReturnPage returnPage;
 	private Form form;
-	private RequiredTextField username;
+	private RequiredTextField<String> username;
 	private RSAPasswordTextField password, passwordConfirm;
 	private CheckBox rememberMe;
 	
@@ -109,7 +109,7 @@ public abstract class DataProfilePanelBase extends Panel {
 			super(id);
 			add(highFormSocket("highFormSocket"));
 			add(feedbackBorder("username-border")
-					.add(username = new RequiredTextField("username")));
+					.add(username = new RequiredTextField<String>("username")));
 			username.add(new UsernameValidator());
 			username.setLabel(new ResourceModel("data.auth.username", "Username"));
 			add(new SimpleFormComponentLabel("username-label", username));
@@ -139,7 +139,7 @@ public abstract class DataProfilePanelBase extends Panel {
 				public boolean isVisible() {
 					return !existing();
 				}
-			}.add(rememberMe = new CheckBox("rememberMe", new Model(Boolean.TRUE))));
+			}.add(rememberMe = new CheckBox("rememberMe", new Model<Boolean>(Boolean.TRUE))));
 			
 			add(lowFormSocket("lowFormSocket"));
 			
@@ -194,7 +194,7 @@ public abstract class DataProfilePanelBase extends Panel {
 	/** @return content to appear above form, base class returns feedback panel */
 	protected Component highFormSocket(String id) {
 		return new FeedbackPanel(id)
-			.add(new AttributeModifier("class", true, new Model("feedback")));
+			.add(new AttributeModifier("class", true, new Model<String>("feedback")));
 	}
 
 	/** @return content to appear below form, base class returns blank */
