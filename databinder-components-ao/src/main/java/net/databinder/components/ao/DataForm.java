@@ -1,5 +1,6 @@
 package net.databinder.components.ao;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 
 import net.databinder.ao.Databinder;
@@ -11,8 +12,8 @@ import org.apache.wicket.model.CompoundPropertyModel;
 
 /** Form to be used with a single object, wraps in a compound property model. */
 @SuppressWarnings("unchecked")
-public class DataForm extends TransactionalForm {
-	
+public class DataForm<T extends RawEntity<K>, K extends Serializable> 
+		extends TransactionalForm<T> {
 	public DataForm(String id, Class entityType) {
 		super(id, new CompoundPropertyModel(new EntityModel(entityType)));
 	}
@@ -30,8 +31,8 @@ public class DataForm extends TransactionalForm {
 			setModelObject(entityManager.create(getEntityModel().getEntityType(), getEntityModel().getFieldMap()));
 	}
 	
-	public EntityModel getEntityModel() {
-		return (EntityModel) ((CompoundPropertyModel) getModel()).getChainedModel();
+	public EntityModel<T, K> getEntityModel() {
+		return (EntityModel<T, K>) ((CompoundPropertyModel) getModel()).getChainedModel();
 	}
 	
 	/** Button to delete this form's model object. */

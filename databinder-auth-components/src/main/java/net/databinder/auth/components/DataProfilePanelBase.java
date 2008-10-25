@@ -32,6 +32,7 @@ import net.databinder.models.BindingModel;
 import org.apache.wicket.Application;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
+import org.apache.wicket.Session;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.border.Border;
@@ -63,9 +64,9 @@ import org.apache.wicket.validation.validator.StringValidator;
  * data.auth.username.taken * </pre> * Must be overriden in a containing page
  * or a subclass of this panel.
  */
-public abstract class DataProfilePanelBase extends Panel {
+public abstract class DataProfilePanelBase<T extends DataUser> extends Panel {
 	private ReturnPage returnPage;
-	private Form form;
+	private Form<T> form;
 	private RequiredTextField<String> username;
 	private RSAPasswordTextField password, passwordConfirm;
 	private CheckBox rememberMe;
@@ -79,26 +80,27 @@ public abstract class DataProfilePanelBase extends Panel {
 	/** @return component used in base page, if needed in subclass */
 	protected CheckBox getRememberMe() { return rememberMe; }
 	/** @return form used in base page, if needed elsewhere */
-	public Form getForm() { return form; }
+	public Form<T> getForm() { return form; }
 
 	public DataProfilePanelBase(String id, ReturnPage returnPage) {
 		super(id);
 		this.returnPage = returnPage;
-		add(form = profileForm("registerForm", DataSignInPageBase.getAuthSession().getUserModel()));
+		add(form = profileForm("registerForm", getAuthSession().getUserModel()));
 		form.add(new Profile("profile"));
 	}
 	
 	/** @return new form component to be used within this panel */
-	protected abstract Form profileForm(String id, IModel userModel);
+	protected abstract Form<T> profileForm(String id, IModel<T> userModel);
 
 	/** @return user from form component */
-	protected DataUser getUser() {
-		return (DataUser) form.getModelObject();
+	protected T getUser() {
+		return form.getModelObject();
 	}
 
 	/** @return true if form is bound to existing user, is not registration form */
+	@SuppressWarnings("unchecked")
 	protected boolean existing() {
-		BindingModel model = ((BindingModel)((IChainingModel)form.getModel()).getChainedModel());
+		BindingModel model = ((BindingModel<T>)((IChainingModel<T>)form.getModel()).getChainedModel());
 		return model != null && model.isBound();
 	}
 
@@ -114,7 +116,7 @@ public abstract class DataProfilePanelBase extends Panel {
 			username.setLabel(new ResourceModel("data.auth.username", "Username"));
 			add(new SimpleFormComponentLabel("username-label", username));
 			add(feedbackBorder("password-border")
-					.add(password = new RSAPasswordTextField("password", new Model(), form) {
+					.add(password = new RSAPasswordTextField("password", new Model<String>(), form) {
 				public boolean isRequired() {
 					return !existing();
 				}
@@ -122,7 +124,7 @@ public abstract class DataProfilePanelBase extends Panel {
 			password.setLabel(new ResourceModel("data.auth.password", "Password"));
 			add(new SimpleFormComponentLabel("password-label", password));
 			add(feedbackBorder("passwordConfirm-border")
-					.add(passwordConfirm = new RSAPasswordTextField("passwordConfirm", new Model(), form) {
+					.add(passwordConfirm = new RSAPasswordTextField("passwordConfirm", new Model<String>(), form) {
 				public boolean isRequired() {
 					return !existing();
 				}
@@ -160,7 +162,7 @@ public abstract class DataProfilePanelBase extends Panel {
 	
 	/** Subclasses call this after form submission. Returns user to prior page if possible, otherwise home. */
 	protected void afterSubmit() {
-		DataSignInPageBase.getAuthSession().signIn(getUser(), (Boolean) rememberMe.getModelObject());
+		getAuthSession().signIn(getUser(), (Boolean) rememberMe.getModelObject());
 
 		if (returnPage == null) {
 			if (!continueToOriginalDestination())
@@ -205,5 +207,10 @@ public abstract class DataProfilePanelBase extends Panel {
 	/** @return border to go around each form component, base returns FormComponentFeedbackBorder.  */
 	protected Border feedbackBorder(String id) {
 		return new FormComponentFeedbackBorder(id);
+	}
+
+	/** @return casted session */
+	protected AuthSession<T> getAuthSession() {
+		return (AuthSession<T>) Session.get();
 	}
 }

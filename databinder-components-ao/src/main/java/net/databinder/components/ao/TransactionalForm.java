@@ -11,9 +11,9 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 
 /** Form subclass that runs a submit callback in a transaction. */
-public abstract class TransactionalForm extends Form {
+public abstract class TransactionalForm<T> extends Form<T> {
 	
-	public TransactionalForm(String id, IModel model) {
+	public TransactionalForm(String id, IModel<T> model) {
 		super(id, model);
 	}
 

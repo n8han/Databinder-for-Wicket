@@ -1,6 +1,7 @@
 package net.databinder.auth.components;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import net.databinder.auth.AuthApplication;
@@ -45,24 +46,24 @@ import org.apache.wicket.model.ResourceModel;
  * @see AuthSession
  */
 @AuthorizeInstantiation(Roles.ADMIN)
-public abstract class UserAdminPageBase extends WebPage {
-	protected Form form;
+public abstract class UserAdminPageBase<T extends DataUser> extends WebPage {
+	protected Form<T> form;
 	public UserAdminPageBase() {
 		add(new DataStyleLink("css"));
 		add(new Label("title", new ResourceModel("data.auth.user_admin", "User Administration")));
-		Class<? extends DataUser> userClass = ((AuthApplication) getApplication()).getUserClass();
+		Class<T> userClass =  ((AuthApplication<T>) getApplication()).getUserClass();
 		
 		add(statusPanel("userStatus"));
 		
 		form = adminForm("form", userClass);
 		add(form);
 		
-		TextField username = new RequiredTextField("username");
+		TextField<String> username = new RequiredTextField<String>("username");
 		username.setLabel(new ResourceModel("data.auth.username", "Username"));
 		form.add(new SimpleFormComponentLabel("username-label", username));
 		form.add(username);
 
-		TextField password = new RSAPasswordTextField("password", new Model(), form) {
+		TextField<String> password = new RSAPasswordTextField("password", new Model<String>(), form) {
 			@Override
 			public boolean isRequired() {
 				return !isBound();
@@ -75,7 +76,7 @@ public abstract class UserAdminPageBase extends WebPage {
 		password.setLabel(new ResourceModel("data.auth.password", "Password"));
 		form.add(new SimpleFormComponentLabel("password-label", password));
 		form.add(password);
-		TextField passwordConfirm = new RSAPasswordTextField("passwordConfirm", new Model(), form) {
+		TextField<String> passwordConfirm = new RSAPasswordTextField("passwordConfirm", new Model<String>(), form) {
 			public boolean isRequired() {
 				return !isBound();
 			}
@@ -85,8 +86,8 @@ public abstract class UserAdminPageBase extends WebPage {
 		form.add(new SimpleFormComponentLabel("passwordConfirm-label", passwordConfirm));
 		form.add(passwordConfirm);
 		
-		form.add(new CheckBoxMultipleChoice("roles", rolesModel(), new AbstractReadOnlyModel() {
-			public Object getObject() {
+		form.add(new CheckBoxMultipleChoice<String>("roles", rolesModel(), new AbstractReadOnlyModel<List<? extends String>>() {
+			public List<String> getObject() {
 				return getRoleChoices();
 			}
 		}));
@@ -97,13 +98,13 @@ public abstract class UserAdminPageBase extends WebPage {
 
 		form.add(new FeedbackPanel("feedback"));
 		
-		add(new UnbindLink("add", form, getBindingModel()));
+		add(new UnbindLink<T>("add", form, getBindingModel()));
 				
-		add(new ModelSourceListPanel("users", form, "username", userList(userClass)));
+		add(new ModelSourceListPanel<T>("users", form, "username", userList(userClass)));
 	}
 	
-	protected DataUser getUser() {
-		return (DataUser) form.getModelObject();
+	protected T getUser() {
+		return form.getModelObject();
 	}
 	
 	protected void setPassword(String password) {
@@ -111,27 +112,28 @@ public abstract class UserAdminPageBase extends WebPage {
 			getUser().getPassword().change(password);
 	}
 	
-	protected BindingModel getBindingModel() {
-		return (BindingModel) ((IChainingModel)form.getModel()).getChainedModel();
+	@SuppressWarnings("unchecked")
+	protected BindingModel<T> getBindingModel() {
+		return (BindingModel<T>) ((IChainingModel)form.getModel()).getChainedModel();
 	}
 	
 	protected boolean isBound() {
 		return getBindingModel().isBound();
 	}
 	
-	protected abstract Form adminForm(String id, Class<? extends DataUser> userClass);
+	protected abstract Form<T> adminForm(String id, Class<T> userClass);
 	
 	protected abstract Button deleteButton(String id);
 	
 	protected abstract DataUserStatusPanelBase statusPanel(String id);
 
-	protected abstract IModel userList(Class<? extends DataUser> userClass);
+	protected abstract IModel<List<T>> userList(Class<T> userClass);
 	
 	protected Component lowFormSocket(String id) {
 		return new NullPlug(id);
 	}
 	
-	protected IModel rolesModel() {
+	protected IModel<Collection<String>> rolesModel() {
 		return null;
 	}
 	

@@ -1,10 +1,12 @@
 package net.databinder.auth.components.ao;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import net.databinder.auth.AuthApplication;
 import net.databinder.auth.components.DataProfilePanelBase;
 import net.databinder.auth.components.DataSignInPageBase.ReturnPage;
+import net.databinder.auth.data.ao.DataUserEntity;
 import net.databinder.auth.data.ao.UserHelper;
 import net.databinder.components.ao.DataForm;
 import net.databinder.models.ao.EntityModel;
@@ -25,19 +27,20 @@ import org.apache.wicket.model.IModel;
  * data.auth.username.taken * </pre> * Must be overriden in a containing page
  * or a subclass of this panel.
  */
-public class DataProfilePanel extends DataProfilePanelBase {
+public class DataProfilePanel<T extends DataUserEntity<K>, K extends Serializable> 
+		extends DataProfilePanelBase<T> {
 	
 	public DataProfilePanel(String id, ReturnPage returnPage) {
 		super(id, returnPage);
 	}
 	
-	private DataForm form;
+	private DataForm<T, K> form;
 	
 	@Override
-	protected Form profileForm(String id, IModel userModel) {
+	protected Form<T> profileForm(String id, IModel<T> userModel) {
 		if (userModel == null) 
-			userModel = new EntityModel(((AuthApplication)getApplication()).getUserClass());
-		return form = new DataForm(id, (EntityModel) userModel) {
+			userModel = new EntityModel<T, K>(((AuthApplication<T>)getApplication()).getUserClass());
+		return form = new DataForm<T, K>(id, (EntityModel<T, K>) userModel) {
 			@SuppressWarnings("unchecked")
 			@Override
 			protected void onSubmit() {

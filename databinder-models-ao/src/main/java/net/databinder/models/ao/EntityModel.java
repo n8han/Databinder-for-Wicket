@@ -15,23 +15,23 @@ import net.java.ao.Common;
 import net.java.ao.RawEntity;
 import net.java.ao.schema.FieldNameConverter;
 
-@SuppressWarnings("unchecked")
-public class EntityModel extends LoadableWritableModel implements BindingModel {
-	private Serializable id;
-	private Class entityType;
+public class EntityModel<T extends RawEntity<K>, K extends Serializable> 
+		extends LoadableWritableModel<T> implements BindingModel<T> {
+	private K id;
+	private Class<T> entityType;
 	private Map<String, Object> propertyStore;
 	private Object managerKey;
 	
-	public EntityModel(Class entityType, Serializable id) {
+	public EntityModel(Class<T> entityType, K id) {
 		this(entityType);
 		this.id = id;
 	}
 	
-	public EntityModel(Class entityType) {
+	public EntityModel(Class<T> entityType) {
 		this.entityType = entityType;
 	}
 	
-	public EntityModel(RawEntity<?> entity) {
+	public EntityModel(T entity) {
 		setObject(entity);
 	}
 	
@@ -39,18 +39,19 @@ public class EntityModel extends LoadableWritableModel implements BindingModel {
 		return id != null;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	protected Object load() {
+	protected T load() {
 		if (isBound())
 			return Databinder.getEntityManager(managerKey).get(entityType, id);
-		return getPropertyStore();
+		return (T) getPropertyStore(); // umm...
 	}
 	
-	public void setObject(Object object) {
+	@SuppressWarnings("unchecked")
+	public void setObject(T entity) {
 		unbind();
-		RawEntity entity = (RawEntity) object;
-		entityType = entity.getEntityType();
-		id = (Serializable) Common.getPrimaryKeyValue(entity);
+		entityType = (Class<T>) entity.getEntityType();
+		id = Common.getPrimaryKeyValue(entity);
 		setTempModelObject(entity);
 	}
 	
@@ -94,7 +95,7 @@ public class EntityModel extends LoadableWritableModel implements BindingModel {
 		return fields;
 	}
 
-	public Class getEntityType() {
+	public Class<T> getEntityType() {
 		return entityType;
 	}
 

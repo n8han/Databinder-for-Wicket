@@ -74,7 +74,7 @@ public class RSAPasswordTextField extends PasswordTextField implements IHeaderCo
 		super(id);
 		init(form);
 	}
-	public RSAPasswordTextField(String id, IModel model, Form form) {
+	public RSAPasswordTextField(String id, IModel<String> model, Form form) {
 		super(id, model);
 		init(form);
 	}
@@ -88,7 +88,7 @@ public class RSAPasswordTextField extends PasswordTextField implements IHeaderCo
 	protected void init(Form form) {
 		setOutputMarkupId(true);
 		
-		add(new AttributeAppender("style", new Model("visibility:hidden"), ";"));
+		add(new AttributeAppender("style", new Model<String>("visibility:hidden"), ";"));
 
 		form.add(new AttributeAppender("onsubmit", new AbstractReadOnlyModel() {
 			public Object getObject() {

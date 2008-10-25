@@ -12,22 +12,22 @@ import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.model.LoadableDetachableModel;
 
 @SuppressWarnings("unchecked")
-public class EntityListModel extends LoadableDetachableModel {
+public class EntityListModel<T extends RawEntity> extends LoadableDetachableModel<List<T>> {
 
-	private Class entityType;
+	private Class<T> entityType;
 	private Query query;
 	private Object managerKey;
 	
-	public EntityListModel(Class entityType) {
+	public EntityListModel(Class<T> entityType) {
 		this (entityType, Query.select());
 	}
-	public EntityListModel(Class entityType, Query query) {
+	public EntityListModel(Class<T> entityType, Query query) {
 		this.entityType = entityType;
 		this.query = query;
 	}
 	
 	@Override
-	protected List<RawEntity> load() {
+	protected List<T> load() {
 		try {
 			return Arrays.asList(Databinder.getEntityManager(managerKey).find(entityType, query));
 		} catch (SQLException e) {

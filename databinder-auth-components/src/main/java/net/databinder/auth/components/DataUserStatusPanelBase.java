@@ -41,7 +41,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
  * data.auth.status.sign_out
  * data.auth.status.sign_in</pre>
  */
-public abstract class DataUserStatusPanelBase extends Panel {
+public abstract class DataUserStatusPanelBase<T extends DataUser> extends Panel {
 	/**
 	 * Constructs sign in and out links.
 	 * @param id Wicket id
@@ -79,7 +79,7 @@ public abstract class DataUserStatusPanelBase extends Panel {
 			}
 			@Override
 			public boolean isVisible() {
-				DataUser user = ((AuthSession) getSession()).getUser();
+				T user = ((AuthSession<T>) getSession()).getUser();
 				return user != null && user.hasRole(Roles.ADMIN);
 			}
 		});
@@ -114,7 +114,7 @@ public abstract class DataUserStatusPanelBase extends Panel {
 			@Override
 			public void onClick() {
 				redirectToInterceptPage(getPageFactory().newPage(
-						((AuthApplication)getApplication()).getSignInPageClass()));
+						((AuthApplication<T>)getApplication()).getSignInPageClass()));
 			}
 			@Override
 			public boolean isVisible() {

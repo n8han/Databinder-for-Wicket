@@ -11,15 +11,15 @@ import org.apache.wicket.markup.html.WebPage;
  * require that this be implemented by the current WebApplication instance.
  * @author Nathan Hamblen
  */
-public interface AuthApplication {
+public interface AuthApplication<T extends DataUser> {
 	/**
 	 * @return class to be used for signed in users
 	 */
-	public Class< ? extends DataUser> getUserClass();
+	public Class<T> getUserClass();
 	/** 
 	 * @return DataUser for the given username. 
 	 */
-	public DataUser getUser(String username);
+	public T getUser(String username);
 	/**
 	 * @return page to sign in users
 	 */
@@ -39,5 +39,5 @@ public interface AuthApplication {
 	 * @param user source of token
 	 * @return restricted token
 	 */
-	public String getToken(DataUser user);
+	public String getToken(T user);
 }

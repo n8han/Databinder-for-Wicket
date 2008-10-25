@@ -46,7 +46,7 @@ import org.apache.wicket.model.ResourceModel;
  * data.auth.sign_in_link
  * or a subclass of this panel.
  */
-public abstract class DataSignInPageBase extends WebPage {
+public abstract class DataSignInPageBase<T extends DataUser> extends WebPage {
 	private SourceList sourceList;
 	
 	private Component profileSocket, signinSocket;
@@ -67,8 +67,8 @@ public abstract class DataSignInPageBase extends WebPage {
 	}
 	
 	public DataSignInPageBase(PageParameters params, ReturnPage returnPage) {
-		AuthApplication app = null;
-		try { app = ((AuthApplication)Application.get()); } catch (ClassCastException e) { }
+		AuthApplication<T> app = null;
+		try { app = ((AuthApplication<T>)Application.get()); } catch (ClassCastException e) { }
 		// make sure the user is not trying to sign in or register with the wrong page
 		if (app == null || !app.getSignInPageClass().isInstance(this))
 			throw new UnauthorizedInstantiationException(DataSignInPageBase.class);
@@ -78,7 +78,7 @@ public abstract class DataSignInPageBase extends WebPage {
 			String token = params.getString("token");
 			// e-mail auth, for example
 			if (username != null && token != null) {
-				DataUser user = (DataUser) app.getUser(username);
+				T user = app.getUser(username);
 				
 				if (user != null && app.getToken(user).equals(token))
 					getAuthSession().signIn(user, true);
@@ -124,7 +124,7 @@ public abstract class DataSignInPageBase extends WebPage {
 	protected abstract Component profileSocket(String id, ReturnPage returnPage);
 	
 	/** @return casted session */
-	protected static  AuthSession getAuthSession() {
-		return (AuthSession) Session.get();
+	protected AuthSession<T> getAuthSession() {
+		return (AuthSession<T>) Session.get();
 	}
 }

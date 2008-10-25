@@ -20,16 +20,17 @@ package net.databinder.auth.components;
 
 import net.databinder.auth.AuthSession;
 import net.databinder.auth.components.DataSignInPageBase.ReturnPage;
+import net.databinder.auth.data.DataUser;
 import net.databinder.components.NullPlug;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
+import org.apache.wicket.Session;
 import org.apache.wicket.markup.html.border.Border;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -45,7 +46,7 @@ import org.apache.wicket.model.ResourceModel;
  * data.auth.sign_in</pre>
  * @see AuthSession
  */
-public class DataSignInPanel extends Panel {
+public class DataSignInPanel<T extends DataUser> extends Panel {
 	private ReturnPage returnPage;
 	public DataSignInPanel(String id, ReturnPage returnPage) {
 		super(id);
@@ -55,7 +56,7 @@ public class DataSignInPanel extends Panel {
 	
 	protected class SignInForm extends Form {
 		private CheckBox rememberMe;
-		private RequiredTextField username;
+		private RequiredTextField<String> username;
 		private RSAPasswordTextField password;
 		
 		protected RequiredTextField getUsername() { return username; }
@@ -66,21 +67,21 @@ public class DataSignInPanel extends Panel {
 			super(id);
 			add(highFormSocket("highFormSocket"));
 			add(feedbackBorder("username-border")
-				.add(username = new RequiredTextField("username", new Model())));
+				.add(username = new RequiredTextField<String>("username", new Model<String>())));
 			username.setLabel(new ResourceModel("data.auth.username", "Username"));
 			add(new SimpleFormComponentLabel("username-label", username));
 			add(feedbackBorder("password-border")
-					.add(password = new RSAPasswordTextField("password", new Model(), this)));
+					.add(password = new RSAPasswordTextField("password", new Model<String>(), this)));
 			password.setRequired(true);
 			password.setLabel(new ResourceModel("data.auth.password", "Password"));
 			add(new SimpleFormComponentLabel("password-label", password));
-			add(rememberMe = new CheckBox("rememberMe", new Model(Boolean.TRUE)));
+			add(rememberMe = new CheckBox("rememberMe", new Model<Boolean>(Boolean.TRUE)));
 			
 			add(lowFormSocket("lowFormSocket"));
 		}
 		@Override
 		protected void onSubmit() {
-			if (DataSignInPageBase.getAuthSession().signIn((String)username.getModelObject(), (String)password.getModelObject(), 
+			if (getAuthSession().signIn((String)username.getModelObject(), (String)password.getModelObject(), 
 					(Boolean)rememberMe.getModelObject()))
 			{
 				if (returnPage == null) {
@@ -101,11 +102,15 @@ public class DataSignInPanel extends Panel {
 	/** @return content to appear above form, base return FeedbackPanel */
 	protected Component highFormSocket(String id) {
 		return new FeedbackPanel(id)
-			.add(new AttributeModifier("class", true, new Model("feedback")));
+			.add(new AttributeModifier("class", true, new Model<String>("feedback")));
 	}
 
 	/** @return content to appear below form, base return blank */
 	protected Component lowFormSocket(String id) {
 		return new NullPlug(id);
+	}
+	/** @return casted session */
+	protected AuthSession<T> getAuthSession() {
+		return (AuthSession<T>) Session.get();
 	}
 }
