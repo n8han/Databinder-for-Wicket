@@ -29,7 +29,7 @@ public class EntityListModel<T extends RawEntity> extends LoadableDetachableMode
 	@Override
 	protected List<T> load() {
 		try {
-			return Arrays.asList(Databinder.getEntityManager(managerKey).find(entityType, query));
+			return (List<T>) Arrays.asList(Databinder.getEntityManager(managerKey).find(entityType, query));
 		} catch (SQLException e) {
 			throw new WicketRuntimeException("Error loading list", e);
 		}
