@@ -1,5 +1,7 @@
 package net.databinder.auth.components.hib;
 
+import java.util.List;
+
 import net.databinder.auth.AuthSession;
 import net.databinder.auth.components.DataUserStatusPanelBase;
 import net.databinder.auth.components.UserAdminPageBase;
@@ -25,12 +27,12 @@ import org.apache.wicket.model.IModel;
  * data.auth.delete</pre>
  * @see AuthSession
  */
-public class UserAdminPage extends UserAdminPageBase {
-	private DataForm form;
+public class UserAdminPage<T extends DataUser> extends UserAdminPageBase<T> {
+	private DataForm<T> form;
 	
 	@Override
-	protected Form adminForm(String id, Class<? extends DataUser> userClass) {
-		return form = new DataForm(id, userClass);
+	protected Form<T> adminForm(String id, Class<T> userClass) {
+		return form = new DataForm<T>(id, userClass);
 	}
 	
 	@Override
@@ -57,8 +59,8 @@ public class UserAdminPage extends UserAdminPageBase {
 	}
 	
 	@Override
-	protected IModel userList(Class<? extends DataUser> userClass) {
-		return new HibernateListModel(userClass);
+	protected IModel<List<T>> userList(Class<T> userClass) {
+		return new HibernateListModel<T>(userClass);
 	}
 
 }
