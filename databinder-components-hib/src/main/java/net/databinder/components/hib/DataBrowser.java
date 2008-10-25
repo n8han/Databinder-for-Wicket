@@ -20,6 +20,7 @@
 package net.databinder.components.hib;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.databinder.components.DataStyleLink;
 import net.databinder.hib.Databinder;
@@ -42,15 +43,15 @@ import org.apache.wicket.model.LoadableDetachableModel;
  * or link to the class with PageLink.
  * @author Nathan Hamblen
  */
-public class DataBrowser extends WebPage {
+public class DataBrowser<T> extends WebPage {
 	public DataBrowser(boolean allowAccess) {
 		if (allowAccess) {
 			add(new DataStyleLink("css"));
 			add(new QueryPanel("queryPanel"));
-			add(new ListView("entities", new LoadableDetachableModel() {
+			add(new ListView<T>("entities", new LoadableDetachableModel<List<T>>() {
 				@SuppressWarnings("unchecked")
 				@Override
-				protected Object load() {
+				protected List<T> load() {
 					return new ArrayList(
 							Databinder.getHibernateSessionFactory().getAllClassMetadata().keySet());
 				}

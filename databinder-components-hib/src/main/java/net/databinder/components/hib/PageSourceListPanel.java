@@ -1,9 +1,10 @@
 package net.databinder.components.hib;
 
+import java.util.List;
+
 import net.databinder.components.SourceListPanel;
 
 import org.apache.wicket.Page;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 
 /**
@@ -12,7 +13,7 @@ import org.apache.wicket.model.IModel;
  * @see PageSourceLink
  * @author Nathan Hamblen
  */
-public class PageSourceListPanel extends SourceListPanel {
+public class PageSourceListPanel<T> extends SourceListPanel<T> {
 	private Class<? extends Page> pageClass;
 	private String idParameter;
 
@@ -23,7 +24,7 @@ public class PageSourceListPanel extends SourceListPanel {
 	 * @param bodyProperty object property for link body text
 	 * @param listModel list of entities to render
 	 */
-	public PageSourceListPanel(String id, Class<? extends Page> page, String bodyProperty, IModel listModel ) {
+	public PageSourceListPanel(String id, Class<? extends Page> page, String bodyProperty, IModel<List<T>> listModel ) {
 		super(id, bodyProperty, listModel);
 		this.pageClass = page;
 	}
@@ -37,7 +38,7 @@ public class PageSourceListPanel extends SourceListPanel {
 	 * @param listModel list of entities to render
 	 */
 	public PageSourceListPanel(String id, Class<? extends Page> page, 
-			String bodyProperty, String idParameter, IModel listModel ) {
+			String bodyProperty, String idParameter, IModel<List<T>> listModel ) {
 		super(id, bodyProperty, listModel);
 		this.pageClass = page;
 		this.idParameter = idParameter;
@@ -46,8 +47,8 @@ public class PageSourceListPanel extends SourceListPanel {
 	/** Called from super-class to construct source links. Note: subclasses my override
 	 * to add attribute modifiers to the Link object constructed here, for example. */
 	@Override
-	protected Link sourceLink(String id, final IModel model) {
-		PageSourceLink link = new PageSourceLink(id, pageClass, model, idParameter) {
+	protected PageSourceLink<T> sourceLink(String id, final IModel<T> model) {
+		PageSourceLink<T> link = new PageSourceLink<T>(id, pageClass, model, idParameter) {
 			@Override
 			protected void setParameters() {
 				super.setParameters();

@@ -8,14 +8,9 @@ import net.java.ao.Transaction;
 
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.markup.html.form.Button;
-import org.apache.wicket.model.IModel;
 
 /** Button that provides a submit transaction similar to TransactionalForm. */
 public abstract class TransactionalButton extends Button {
-	public TransactionalButton(String id, IModel model) {
-		super(id, model);
-	}
-	
 	public TransactionalButton(String id) {
 		super(id);
 	}

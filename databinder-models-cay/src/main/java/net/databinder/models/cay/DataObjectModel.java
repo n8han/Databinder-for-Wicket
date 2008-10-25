@@ -31,13 +31,14 @@ import org.apache.cayenne.PersistenceState;
  * Basic model mapping to a single Cayenne data object. Detaches at the end
  * of a request *unless* the object has uncommitted changes.
  **/
-public class DataObjectModel extends LoadableWritableModel implements BindingModel {
+public class DataObjectModel<T extends DataObject> extends LoadableWritableModel<T> implements BindingModel<T> {
 	
 	private ObjectId id;
-	private DataObject retainedObject;
+	private T retainedObject;
 
-	public DataObjectModel(Class<? extends DataObject> objectClass) {
-		setObject(Databinder.getContext().newObject(objectClass));
+	@SuppressWarnings("unchecked")
+	public DataObjectModel(Class<T> objectClass) {
+		setObject((T) Databinder.getContext().newObject(objectClass));
 	}
 	
 	public DataObjectModel(ObjectId id) {
@@ -49,20 +50,20 @@ public class DataObjectModel extends LoadableWritableModel implements BindingMod
 	}
 
 	/** Loads from storage unless the object has been retained. */
+	@SuppressWarnings("unchecked")
 	@Override
-	protected Object load() {
+	protected T load() {
 		if (retainedObject != null) {
 			Databinder.getContext().registerNewObject(retainedObject);
 			return retainedObject;
 		}
-		return DataObjectUtils.objectForPK(Databinder.getContext(), id);
+		return (T) DataObjectUtils.objectForPK(Databinder.getContext(), id);
 	}
 
 	/**
 	 * @param object must be a Cayenne DataObject
 	 */
-	public void setObject(Object object) {
-		DataObject dataObject = (DataObject) object;
+	public void setObject(T dataObject) {
 		id = dataObject.getObjectId();
 		setTempModelObject(dataObject);
 		if (!isBound())
@@ -72,8 +73,8 @@ public class DataObjectModel extends LoadableWritableModel implements BindingMod
 	}
 	
 	@Override
-	public DataObject getObject() {
-		return (DataObject) super.getObject();
+	public T getObject() {
+		return super.getObject();
 	}
 	
 	/**
@@ -92,8 +93,9 @@ public class DataObjectModel extends LoadableWritableModel implements BindingMod
 		return !id.isTemporary();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void unbind() {
-		setObject(Databinder.getContext().createAndRegisterNewObject(id.getEntityName()));
+		setObject((T) Databinder.getContext().createAndRegisterNewObject(id.getEntityName()));
 	}
 
 }

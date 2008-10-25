@@ -41,9 +41,9 @@ import org.apache.wicket.util.time.Duration;
  * Base class for Databinder implementations providing an implementation for
  * authentication cookies and current user lookup.
  */
-public abstract class AuthDataSessionBase extends WebSession implements AuthSession {
+public abstract class AuthDataSessionBase<T extends DataUser> extends WebSession implements AuthSession<T> {
 	/** Effective signed in state. */
-	private IModel userModel;
+	private IModel<T> userModel;
 	private static final String CHARACTER_ENCODING = "UTF-8";
 
 	/**
@@ -54,8 +54,8 @@ public abstract class AuthDataSessionBase extends WebSession implements AuthSess
 		super(request);
 	}
 	
-	protected static AuthApplication getApp() {
-		return (AuthApplication) Application.get();
+	protected AuthApplication<T> getApp() {
+		return (AuthApplication<T>) Application.get();
 	}
 	
 	public static AuthDataSessionBase get() {
@@ -65,21 +65,21 @@ public abstract class AuthDataSessionBase extends WebSession implements AuthSess
 	/**
 	 * @return DataUser object for current user, or null if none signed in.
 	 */
-	public DataUser getUser() {
+	public T getUser() {
 		if  (isSignedIn()) {
-			return (DataUser) getUserModel().getObject();
+			return getUserModel().getObject();
 		}
 		return null;
 	}
 	
-	public IModel getUserModel() {
+	public IModel<T> getUserModel() {
 		return userModel;
 	}
 	
 	/**
 	 * @return model for current user
 	 */
-	public abstract IModel createUserModel(DataUser user);
+	public abstract IModel<T> createUserModel(T user);
 
 	/**
 	 * @return length of time sign-in cookie should persist, defined here as one month
@@ -111,7 +111,7 @@ public abstract class AuthDataSessionBase extends WebSession implements AuthSess
 	 */
 	public boolean signIn(final String username, final String password, boolean setCookie) {
 		signOut();
-		DataUser potential = getUser(username);
+		T potential = getUser(username);
 		if (potential != null && (potential).getPassword().matches(password))
 			signIn(potential, setCookie);
 		
@@ -124,7 +124,7 @@ public abstract class AuthDataSessionBase extends WebSession implements AuthSess
 	 * @param user validated and persisted user, must be in current Hibernate session
 	 * @param setCookie if true, sets cookie to remember user
 	 */
-	public void signIn(DataUser user, boolean setCookie) {
+	public void signIn(T user, boolean setCookie) {
 		userModel = createUserModel(user);
 		if (setCookie)
 			setCookie();
@@ -140,14 +140,14 @@ public abstract class AuthDataSessionBase extends WebSession implements AuthSess
 			token = requestCycle.getCookie(getAuthCookieName());
 
 		if (userCookie != null && token != null) {
-			DataUser potential;
+			T potential;
 			try {
 				potential = getUser(URLDecoder.decode(userCookie.getValue(), CHARACTER_ENCODING));
 			} catch (UnsupportedEncodingException e) {
 				throw new WicketRuntimeException(e);
 			}
 			if (potential != null && potential instanceof DataUser) {
-				String correctToken = getApp().getToken((DataUser)potential);
+				String correctToken = getApp().getToken(potential);
 				if (correctToken.equals(token.getValue()))
 					signIn(potential, false);
 			}
@@ -162,7 +162,7 @@ public abstract class AuthDataSessionBase extends WebSession implements AuthSess
 	 * @return user object from persistent storage
 	 * @see AuthApplication
 	 */
-	protected DataUser getUser(final String username) {
+	protected T getUser(final String username) {
 		return getApp().getUser(username);
 	}
 
@@ -183,7 +183,7 @@ public abstract class AuthDataSessionBase extends WebSession implements AuthSess
 		if (userModel == null)
 			throw new WicketRuntimeException("User must be signed in when calling this method");
 		
-		DataUser cookieUser = (DataUser) getUser();
+		T cookieUser = getUser();
 		WebResponse resp = (WebResponse) RequestCycle.get().getResponse();
 		
 		Cookie name, auth;

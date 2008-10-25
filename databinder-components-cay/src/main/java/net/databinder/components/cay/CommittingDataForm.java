@@ -6,12 +6,12 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 
 /** Form that commits the current context in onSubmit() */
-public class CommittingDataForm extends Form {
+public class CommittingDataForm<T> extends Form<T> {
 	public CommittingDataForm(String id) {
 		super(id);
 	}
 	
-	public CommittingDataForm(String id, IModel model) {
+	public CommittingDataForm(String id, IModel<T> model) {
 		super(id, model);
 	}
 	

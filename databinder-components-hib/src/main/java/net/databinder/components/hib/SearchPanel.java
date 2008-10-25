@@ -112,6 +112,7 @@ public abstract class SearchPanel extends Panel {
 	
 	/** Form with AJAX components and their AjaxCells. */
 	public class SearchForm extends Form {
+		@SuppressWarnings("unchecked")
 		public SearchForm(String id) {
 			super(id);
 

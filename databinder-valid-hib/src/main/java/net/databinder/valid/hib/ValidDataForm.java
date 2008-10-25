@@ -41,7 +41,7 @@ import org.hibernate.validator.InvalidValue;
  * @author Nathan Hamblen
  * @see DatabinderValidator
  */
-public class ValidDataForm extends DataForm {
+public class ValidDataForm<T> extends DataForm<T> {
 	/**
 	 * Instantiates this form and a new, blank instance of the given class as a persistent model
 	 * object. By default the model object created is serialized and retained between requests until
@@ -50,11 +50,11 @@ public class ValidDataForm extends DataForm {
 	 * @param modelClass for the persistent object
 	 * @see HibernateObjectModel#setRetainUnsaved(boolean)
 	 */
-	public ValidDataForm(String id, Class modelClass) {
+	public ValidDataForm(String id, Class<T> modelClass) {
 		super(id, modelClass);
 	}
 
-	public ValidDataForm(String id, HibernateObjectModel model) {
+	public ValidDataForm(String id, HibernateObjectModel<T> model) {
 		super(id, model);
 	}
 
@@ -64,7 +64,7 @@ public class ValidDataForm extends DataForm {
 	 * @param modelClass for the persistent object
 	 * @param persistentObjectId id of the persistent object
 	 */
-	public ValidDataForm(String id, Class modelClass, Serializable persistentObjectId) {
+	public ValidDataForm(String id, Class<T> modelClass, Serializable persistentObjectId) {
 		super(id, modelClass, persistentObjectId);
 	}
 

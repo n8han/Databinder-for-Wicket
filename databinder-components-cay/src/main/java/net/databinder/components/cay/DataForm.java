@@ -8,17 +8,17 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IChainingModel;
 
 /** Form to be used with a single object, wraps in a compound property model. */
-public class DataForm extends CommittingDataForm {
-	public DataForm(String id, Class<? extends DataObject> cl) {
-		super(id, new CompoundPropertyModel(new DataObjectModel(cl)));
+public class DataForm<T extends DataObject> extends CommittingDataForm<T> {
+	public DataForm(String id, Class<T> cl) {
+		super(id, new CompoundPropertyModel<T>(new DataObjectModel<T>(cl)));
 	}
-	public DataForm(String id, DataObject object) {
-		super(id, new CompoundPropertyModel(new DataObjectModel(object)));
+	public DataForm(String id, T object) {
+		super(id, new CompoundPropertyModel<T>(new DataObjectModel<T>(object)));
 	}
 	public DataForm(String id, ObjectId objectId) {
-		super(id, new CompoundPropertyModel(new DataObjectModel(objectId)));
+		super(id, new CompoundPropertyModel<T>(new DataObjectModel<T>(objectId)));
 	}
-	public DataObjectModel getPersistentObjectModel() {
-		return (DataObjectModel) ((IChainingModel)getModel()).getChainedModel();
+	public DataObjectModel<T> getPersistentObjectModel() {
+		return (DataObjectModel<T>) ((IChainingModel<T>)getModel()).getChainedModel();
 	}
 }

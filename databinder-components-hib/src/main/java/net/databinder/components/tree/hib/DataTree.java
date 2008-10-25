@@ -73,9 +73,9 @@ public abstract class DataTree<T extends DataTreeObject<T>> extends BaseTree {
 	public DefaultMutableTreeNode clear(AjaxRequestTarget target) {
 		T newObject = createNewObject();
 		DefaultMutableTreeNode newRootNode = new DefaultMutableTreeNode(
-				new HibernateObjectModel(newObject));
+				new HibernateObjectModel<T>(newObject));
 		TreeModel treeModel = new DefaultTreeModel(newRootNode);
-		setDefaultModel(new Model((Serializable) treeModel));
+		setDefaultModel(new Model<Serializable>((Serializable) treeModel));
 		repaint(target);
 		return newRootNode; 
 	}
@@ -93,7 +93,7 @@ public abstract class DataTree<T extends DataTreeObject<T>> extends BaseTree {
 	private void populateTree(DefaultMutableTreeNode parent, 
 			Collection<T> children) {		
 		for (T t : children) {
-			HibernateObjectModel m = new HibernateObjectModel(t);
+			HibernateObjectModel<T> m = new HibernateObjectModel<T>(t);
 			DefaultMutableTreeNode node = new DefaultMutableTreeNode(m);
 			parent.add(node);
 			populateTree(node, t.getChildren());
@@ -142,7 +142,7 @@ public abstract class DataTree<T extends DataTreeObject<T>> extends BaseTree {
 			parent.addChild(newObject);
 		
 		DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(
-				new HibernateObjectModel(newObject)); 
+				new HibernateObjectModel<T>(newObject)); 
 		parentNode.add(newNode);
 		return newNode;
 	}

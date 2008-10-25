@@ -23,7 +23,7 @@ import java.util.Iterator;
 import net.databinder.models.hib.HibernateObjectModel;
 
 import org.apache.wicket.markup.repeater.RefreshingView;
-import org.apache.wicket.model.BoundCompoundPropertyModel;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 
 /**
@@ -33,7 +33,7 @@ import org.apache.wicket.model.IModel;
  * must be Hibernate entities; a Hibernate exeception will be thrown otherwise. 
  * @author Nathan Hamblen
  */
-public abstract class IterableEntityView extends RefreshingView {
+public abstract class IterableEntityView<T> extends RefreshingView<T> {
 	
 	/**
 	 * Contruct with externally bound model whose object must be Iterable.
@@ -47,13 +47,14 @@ public abstract class IterableEntityView extends RefreshingView {
 	 * @param id Wicket id
 	 * @param model Wrapped object must be Iterable.
 	 */
-	public IterableEntityView(String id, IModel model) {
+	public IterableEntityView(String id, IModel<T> model) {
 		super(id, model);
 	}	
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	protected final Iterator getItemModels() {
-		return new ModelIterator((Iterable)getDefaultModelObject());
+	protected final Iterator<IModel<T>> getItemModels() {
+		return new ModelIterator((Iterable<T>) getDefaultModelObject());
 	}
 	
 	/**
@@ -62,15 +63,15 @@ public abstract class IterableEntityView extends RefreshingView {
 	 * @param o object to be wrapped
 	 * @return detachable model wrapping object
 	 */
-	protected IModel model(Object o) {
-		return new BoundCompoundPropertyModel(new HibernateObjectModel(o));
+	protected IModel<T> model(T o) {
+		return new CompoundPropertyModel<T>(new HibernateObjectModel<T>(o));
 	}
 	
-	private class ModelIterator implements Iterator
+	private class ModelIterator implements Iterator<IModel<T>>
 	{
-		private Iterator iterator;
+		private Iterator<T> iterator;
 
-		public ModelIterator(Iterable items)
+		public ModelIterator(Iterable<T> items)
 		{
 			if (items != null)
 				this.iterator = items.iterator();
@@ -86,7 +87,7 @@ public abstract class IterableEntityView extends RefreshingView {
 			return iterator != null && iterator.hasNext();
 		}
 
-		public Object next()
+		public IModel<T> next()
 		{
 			return model(iterator.next());
 		}

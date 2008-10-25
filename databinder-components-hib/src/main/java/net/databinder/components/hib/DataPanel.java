@@ -23,7 +23,8 @@ import java.io.Serializable;
 import net.databinder.models.hib.HibernateObjectModel;
 
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.BoundCompoundPropertyModel;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IChainingModel;
 
 /**
  * Panel subclass to be tied to a single persistent object. Similar to
@@ -32,15 +33,15 @@ import org.apache.wicket.model.BoundCompoundPropertyModel;
  * @see DataForm
  * @author Nathan Hamblen
  */
-public class DataPanel extends Panel {
+public class DataPanel<T> extends Panel {
 
 	/**
 	 * Create panel with an existing persistent object model.
 	 * @param id Wicket id
 	 * @param model to be wrapped in a BoundCompoundPropertyModel
 	 */
-	public DataPanel(String id, HibernateObjectModel model) {
-		super(id, new BoundCompoundPropertyModel(model));
+	public DataPanel(String id, HibernateObjectModel<T> model) {
+		super(id, new CompoundPropertyModel<T>(model));
 	}
 
 	/**
@@ -49,8 +50,8 @@ public class DataPanel extends Panel {
 	 * @param modelClass for the persistent object
 	 * @param persistentObjectId id of the persistent object
 	 */
-	public DataPanel(String id, Class modelClass, Serializable persistentObjectId) {
-		super(id, new BoundCompoundPropertyModel(new HibernateObjectModel(modelClass, persistentObjectId)));
+	public DataPanel(String id, Class<T> modelClass, Serializable persistentObjectId) {
+		super(id, new CompoundPropertyModel<T>(new HibernateObjectModel<T>(modelClass, persistentObjectId)));
 	}
 
 	/**
@@ -66,9 +67,10 @@ public class DataPanel extends Panel {
 	/**
 	 * @return the nested model, casted to the expected IModel subclass.
 	 */
-	protected HibernateObjectModel getPersistentObjectModel() {
+	@SuppressWarnings("unchecked")
+	protected HibernateObjectModel<T> getPersistentObjectModel() {
 		try {
-			return (HibernateObjectModel) getBindingModel().getChainedModel();
+			return (HibernateObjectModel) ((IChainingModel<T>)getDefaultModel()).getChainedModel();
 		} catch (ClassCastException c) {
 			throw new RuntimeException("DataPanel's nested model was not a HibernateObjectModel", c);
 		}
@@ -79,7 +81,7 @@ public class DataPanel extends Panel {
 	 * @param object  to attach to this panel
 	 * @return this panel, for chaining
 	 */
-	public DataPanel setPersistentObject(Object object) {
+	public DataPanel setPersistentObject(T object) {
 		getPersistentObjectModel().setObject(object);
 		return this;
 	}
@@ -90,16 +92,8 @@ public class DataPanel extends Panel {
 	 * @param model to back this panel
 	 * @return this panel, for chaining
 	 */
-	protected DataPanel setPersistentObjectModel(HibernateObjectModel model) {
-		setDefaultModel(new BoundCompoundPropertyModel(model));
+	protected DataPanel<T> setPersistentObjectModel(HibernateObjectModel<T> model) {
+		setDefaultModel(new CompoundPropertyModel<T>(model));
 		return this;
-	}
-
-	/**
-	 * @return this panel's model for binding components to expressions.
-	 */
-	@Deprecated
-	protected BoundCompoundPropertyModel getBindingModel() {
-		return (BoundCompoundPropertyModel) getDefaultModel();
 	}
 }

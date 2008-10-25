@@ -43,7 +43,6 @@ import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
-import org.apache.wicket.model.BoundCompoundPropertyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -102,7 +101,7 @@ public class QueryPanel extends Panel {
 		resultsHolder.setOutputMarkupId(true);
 		add(resultsHolder);
 		
-		Form form = new Form("form", new CompoundPropertyModel(query));
+		Form<QueryBean> form = new Form<QueryBean>("form", new CompoundPropertyModel<QueryBean>(query));
 		form.setOutputMarkupId(true);
 		form.add(new TextArea("query"));
 		form.add(new AjaxButton("submit", form) {
@@ -136,6 +135,7 @@ public class QueryPanel extends Panel {
 	 * Creates a result table for the current query.
 	 * @return a result table, or an empty label if there is no current query
 	 */
+	@SuppressWarnings("unchecked")
 	private Component getResultsTable() {
 		if (Strings.isEmpty(query.getQuery())) {
 			return new Label("results", "");
@@ -156,8 +156,9 @@ public class QueryPanel extends Panel {
 					return QueryPanel.this.query.getQuery();
 				}
 			
-				public IModel model(Object object) {
-					return new BoundCompoundPropertyModel(new HibernateObjectModel(object));
+				@SuppressWarnings("unchecked")
+				public IModel<?> model(Object object) {
+					return new CompoundPropertyModel(new HibernateObjectModel(object));
 				}
 			
 				public Iterator iterator(int first, int count) {
