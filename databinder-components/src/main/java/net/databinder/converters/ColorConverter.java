@@ -31,7 +31,7 @@ import org.apache.wicket.util.string.Strings;
  * @author Nathan Hamblen
  * @see Color
  */
-public class ColorConverter extends AbstractConverter<Color> {
+public class ColorConverter extends AbstractConverter {
 
 	@Override
 	protected Class<Color> getTargetType() {
@@ -47,8 +47,8 @@ public class ColorConverter extends AbstractConverter<Color> {
 		}
 	}
 	@Override
-	public String convertToString(Color c, Locale locale) {
-		if (c == null) return null;
-		return "#" + Integer.toHexString(c.getRGB()).substring(2);
+	public String convertToString(Object o, Locale locale) {
+		if (o == null) return null;
+		return "#" + Integer.toHexString(((Color)o).getRGB()).substring(2);
 	}
 }

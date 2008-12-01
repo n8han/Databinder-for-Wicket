@@ -113,7 +113,7 @@ public abstract class DataUserStatusPanelBase<T extends DataUser> extends Panel 
 		return new Link(id) {
 			@Override
 			public void onClick() {
-				redirectToInterceptPage(getPageFactory().newPage(
+				redirectToInterceptPage(getSession().getPageFactory().newPage(
 						((AuthApplication<T>)getApplication()).getSignInPageClass()));
 			}
 			@Override

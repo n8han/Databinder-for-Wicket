@@ -31,7 +31,7 @@ import org.apache.wicket.util.string.Strings;
  * Convert an object to a java.net.URI.
  * @author Nathan Hamblen
  */
-public class URIConverter extends AbstractConverter<URI> {
+public class URIConverter extends AbstractConverter {
 
 	@Override
 	protected Class<URI> getTargetType() {

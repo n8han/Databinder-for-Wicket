@@ -237,15 +237,14 @@ public class DataForm<T> extends DataFormBase<T> {
 	 * when comparing the retained version object to the one loaded from persistent storage.
 	 */
 	@Override
-	protected void validate() {
+	protected void onValidate() {
 		if (version != null) {
 			Serializable currentVersion = getPersistentObjectModel().getVersion();
 			if (!version.equals(currentVersion))
 				error(getString("version.mismatch", null)); // report error
 				// do not update version number as old data still appears in form
 		}
-
-		super.validate();
+		super.onValidate();
 	}
 
 	/**

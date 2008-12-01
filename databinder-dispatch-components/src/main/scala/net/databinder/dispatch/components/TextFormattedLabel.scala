@@ -32,7 +32,7 @@ class TextFormattedLabel(id: String, converter: TextFormatConverter) extends Lab
   
   setEscapeModelStrings(false)
 
-  override def getConverter[T](cl: Class[T]): IConverter[T] = converter.asInstanceOf[IConverter[T]]
+  override def getConverter(cl: Class[_]) = converter
 }
 
 abstract class TextFormat(val code: Int, val path_name: String)

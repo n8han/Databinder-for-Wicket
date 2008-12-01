@@ -26,7 +26,7 @@ abstract class HttpPostConverter extends AbstractConverter[String] {
   
   def getTargetType = classOf[String]
 
-  override def convertToString(source: String, locale: Locale) = try {
+  override def convertToString(source: Object, locale: Locale) = try {
     HttpPostConverter.cache(path_name, source.hashCode()) {
       (service("/" + path_name) << "input" -> source).as_str
     }  
