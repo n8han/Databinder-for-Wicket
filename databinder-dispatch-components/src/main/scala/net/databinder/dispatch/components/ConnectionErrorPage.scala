@@ -37,7 +37,7 @@ import org.apache.wicket.protocol.http.WebRequest
  */
 class ConnectionErrorPage(e: Throwable) extends WebPage {
 
-  def << (c: Component) = add(Array(c))
+  def << (c: Component) = add(c)
 
   this << new Label("error", new Model(e.getMessage()))
   this << new Link("retry") {
