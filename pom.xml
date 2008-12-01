@@ -17,7 +17,7 @@
  </licenses>
  <properties>
   <wicket.version>1.4-rc1</wicket.version>
-  <scala.version>2.7.1</scala.version>
+  <scala.version>2.7.2</scala.version>
  </properties>
  <packaging>pom</packaging>
  <modules>
@@ -42,10 +42,6 @@
   <module>databinder-valid-hib</module>
   <module>databinder-draw</module>
  </modules>
- <scm>
-  <connection>scm:svn:svn://localhost/databinder/trunk</connection>
-  <developerConnection>scm:svn:svn://localhost/databinder/trunk</developerConnection>
- </scm>
  <organization>
   <name>Nathan Hamblen</name>
  </organization>
@@ -58,12 +54,6 @@
      <target>1.5</target>
      <showDeprecation>true</showDeprecation>
      <showWarnings>true</showWarnings>
-    </configuration>
-   </plugin>
-   <plugin>
-    <artifactId>maven-release-plugin</artifactId>
-    <configuration>
-     <tagBase>svn://localhost/databinder/tags</tagBase>
     </configuration>
    </plugin>
    <plugin>
