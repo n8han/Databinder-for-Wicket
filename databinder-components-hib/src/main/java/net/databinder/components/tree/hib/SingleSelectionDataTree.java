@@ -41,7 +41,7 @@ public abstract class SingleSelectionDataTree<T extends DataTreeObject<T>> exten
 	 */
 	public DefaultMutableTreeNode getSelectedTreeNode() {
 		@SuppressWarnings("unchecked")
-		Collection<DefaultMutableTreeNode> selectedNodes = 
+		Collection<Object> selectedNodes = 
 				getTreeState().getSelectedNodes();
 		if (selectedNodes.isEmpty()) {
 			return null;
