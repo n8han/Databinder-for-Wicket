@@ -225,6 +225,7 @@ public abstract class AuthDataSessionBase extends WebSession implements AuthSess
 		CookieRequestCycle requestCycle = (CookieRequestCycle) RequestCycle.get();
 		requestCycle.clearCookie(getUserCookieName());
 		requestCycle.clearCookie(getAuthCookieName());
+		getSessionStore().invalidate(requestCycle.getRequest());
 	}
 
 }
