@@ -12,7 +12,6 @@ import net.databinder.models.ao.EntityModel;
 
 import org.apache.wicket.authorization.strategies.role.Roles;
 import org.apache.wicket.markup.html.form.Button;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 
 /**
@@ -28,12 +27,10 @@ import org.apache.wicket.model.IModel;
  * data.auth.delete</pre>
  * @see net.databinder.auth.AuthSession
  */
-public class UserAdminPage extends UserAdminPageBase {
-	private DataForm form;
-	
+public class UserAdminPage extends UserAdminPageBase<DataForm> {
 	@Override
-	protected Form adminForm(String id, Class<? extends DataUser> userClass) {
-		return form = new DataForm(id, new EntityModel(userClass) {
+	protected DataForm adminForm(String id, Class<? extends DataUser> userClass) {
+		return new DataForm(id, new EntityModel(userClass) {
 			@Override
 			protected void putDefaultProperties(
 					Map<String, Object> propertyStore) {
@@ -55,15 +52,15 @@ public class UserAdminPage extends UserAdminPageBase {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void setPassword(String password) {
-		if (form.getEntityModel().isBound())
+		if (getUserForm().getEntityModel().isBound())
 			super.setPassword(password);
 		else
-			((Map)form.getModelObject()).put("passwordHash", UserHelper.getHash(password));
+			((Map)getUserForm().getModelObject()).put("passwordHash", UserHelper.getHash(password));
 	}
 
 	@Override
 	protected Button deleteButton(String id) {
-		return form.new DeleteButton(id);
+		return getUserForm().new DeleteButton(id);
 	}
 
 	@Override

@@ -9,7 +9,6 @@ import net.databinder.hib.Databinder;
 import net.databinder.models.hib.HibernateListModel;
 
 import org.apache.wicket.markup.html.form.Button;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 
 /**
@@ -25,12 +24,10 @@ import org.apache.wicket.model.IModel;
  * data.auth.delete</pre>
  * @see AuthSession
  */
-public class UserAdminPage extends UserAdminPageBase {
-	private DataForm form;
-	
+public class UserAdminPage extends UserAdminPageBase<DataForm> {
 	@Override
-	protected Form adminForm(String id, Class<? extends DataUser> userClass) {
-		return form = new DataForm(id, userClass);
+	protected DataForm adminForm(String id, Class<? extends DataUser> userClass) {
+		return new DataForm(id, userClass);
 	}
 	
 	@Override
@@ -38,13 +35,13 @@ public class UserAdminPage extends UserAdminPageBase {
 		return new Button("delete") {
 			@Override
 			public void onSubmit() {
-				Databinder.getHibernateSession().delete(form.getModelObject());
+				Databinder.getHibernateSession().delete(getUserForm().getModelObject());
 				Databinder.getHibernateSession().getTransaction().commit();
-				form.clearPersistentObject();
+				getUserForm().clearPersistentObject();
 			}
 			@Override
 			public boolean isEnabled() {
-				return !((AuthSession)getSession()).getUser().equals(form.getModelObject())
+				return !((AuthSession)getSession()).getUser().equals(getUserForm().getModelObject())
 					&& getBindingModel().isBound();
 			}
 		}.setDefaultFormProcessing(false);	

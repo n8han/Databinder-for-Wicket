@@ -45,8 +45,12 @@ import org.apache.wicket.model.ResourceModel;
  * @see AuthSession
  */
 @AuthorizeInstantiation(Roles.ADMIN)
-public abstract class UserAdminPageBase extends WebPage {
-	protected Form form;
+public abstract class UserAdminPageBase<T extends Form> extends WebPage {
+	private T form;
+	protected T getUserForm() {
+		return form;
+	}
+
 	public UserAdminPageBase() {
 		add(new DataStyleLink("css"));
 		add(new Label("title", new ResourceModel("data.auth.user_admin", "User Administration")));
@@ -119,7 +123,7 @@ public abstract class UserAdminPageBase extends WebPage {
 		return getBindingModel().isBound();
 	}
 	
-	protected abstract Form adminForm(String id, Class<? extends DataUser> userClass);
+	protected abstract T adminForm(String id, Class<? extends DataUser> userClass);
 	
 	protected abstract Button deleteButton(String id);
 	
