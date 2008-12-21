@@ -113,6 +113,7 @@ public class HibernateProvider extends PropertyDataProvider  {
 	 * Provides entities matching the given query with bound parameters.  The count query
 	 * is derived by prefixing "select count(*)" to the given query; this will fail if 
 	 * the supplied query has a select clause.
+	 * @deprecated because the derived count query is often non-standard, even if it works. Use the longer constructor.
 	 */
 	public HibernateProvider(String query, QueryBinder queryBinder) {
 		this(query, queryBinder, makeCount(query), queryBinder);
@@ -134,7 +135,10 @@ public class HibernateProvider extends PropertyDataProvider  {
 		this.countQueryBuilder = countQueryBuilder;
 	}
 
-	/** @return query with select count(*) prepended */
+	/**
+	 * @deprecated
+	 * @return query with select count(*) prepended 
+	 */
 	static protected String makeCount(String query) {
 		return "select count(*) " + query;
 	}
