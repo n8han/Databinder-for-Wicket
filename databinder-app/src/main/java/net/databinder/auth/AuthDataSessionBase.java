@@ -110,7 +110,7 @@ public abstract class AuthDataSessionBase extends WebSession implements AuthSess
 	 * @return true if signed in, false if credentials incorrect
 	 */
 	public boolean signIn(final String username, final String password, boolean setCookie) {
-		signOut();
+		clearUser();
 		DataUser potential = getUser(username);
 		if (potential != null && (potential).getPassword().matches(password))
 			signIn(potential, setCookie);
@@ -219,13 +219,18 @@ public abstract class AuthDataSessionBase extends WebSession implements AuthSess
 			userModel.detach();
 	}
 	
-	/** Nullifies userModel and clears authentication cookies. */
-	public void signOut() {
+	/** Nullifies userModela nd clears authentication cookies. */
+	protected void clearUser() {
 		userModel = null;
 		CookieRequestCycle requestCycle = (CookieRequestCycle) RequestCycle.get();
 		requestCycle.clearCookie(getUserCookieName());
 		requestCycle.clearCookie(getAuthCookieName());
-		getSessionStore().invalidate(requestCycle.getRequest());
+  }	  
+
+  /** Signs out and invalidates session. */	
+	public void signOut() {
+	  clearUser();
+		getSessionStore().invalidate(RequestCycle.get().getRequest());
 	}
 
 }
