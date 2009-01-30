@@ -31,19 +31,19 @@ import org.apache.wicket.extensions.markup.html.repeater.data.sort.*;
  * @author Mark Southern (southern at scripps dot edu)
  */
 
-public class SortableHibernateProvider extends HibernateProvider implements ISortableDataProvider {
+public class SortableHibernateProvider<T> extends HibernateProvider<T> implements ISortableDataProvider<T> {
 
     private ISortStateLocator sortStateLocator = null;
 
     private ISortState sortState;
 
-	public SortableHibernateProvider(Class<?> objectClass, CriteriaBuilder criteriaBuilder, CriteriaBuilder orderingCriteriaBuilder) {
+	public SortableHibernateProvider(Class<T> objectClass, CriteriaBuilder criteriaBuilder, CriteriaBuilder orderingCriteriaBuilder) {
         super(objectClass, criteriaBuilder, orderingCriteriaBuilder);
         if (orderingCriteriaBuilder instanceof ISortStateLocator)
             sortStateLocator = (ISortStateLocator) orderingCriteriaBuilder;
     }
 
-    public SortableHibernateProvider(Class<?> objectClass, OrderingCriteriaBuilder criteriaBuilder) {
+    public SortableHibernateProvider(Class<T> objectClass, OrderingCriteriaBuilder criteriaBuilder) {
         super(objectClass, criteriaBuilder);
         if (criteriaBuilder instanceof ISortStateLocator)
             sortStateLocator = (ISortStateLocator) criteriaBuilder;
