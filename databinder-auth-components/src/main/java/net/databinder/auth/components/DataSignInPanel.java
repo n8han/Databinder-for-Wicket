@@ -49,9 +49,19 @@ public class DataSignInPanel extends Panel {
 	public DataSignInPanel(String id, ReturnPage returnPage) {
 		super(id);
 		this.returnPage = returnPage;
-		add(new SignInForm("signInForm"));
+		add(newSignInForm("signInForm"));
 	}
 	
+	/** Override to instantiate a SignInForm subclass. */
+	protected SignInForm newSignInForm(String id) {
+		return new SignInForm(id);
+	}
+	
+	/** @return default value for remember me checkbox */
+	protected boolean getRememberMeDefault() {
+		return true;
+	}
+
 	protected class SignInForm extends Form {
 		private CheckBox rememberMe;
 		private RequiredTextField username;
@@ -73,7 +83,7 @@ public class DataSignInPanel extends Panel {
 			password.setRequired(true);
 			password.setLabel(new ResourceModel("data.auth.password", "Password"));
 			add(new SimpleFormComponentLabel("password-label", password));
-			add(rememberMe = new CheckBox("rememberMe", new Model(Boolean.TRUE)));
+			add(rememberMe = new CheckBox("rememberMe", new Model(getRememberMeDefault())));
 			
 			add(lowFormSocket("lowFormSocket"));
 		}
