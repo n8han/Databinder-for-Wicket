@@ -28,7 +28,7 @@ abstract class HttpPostConverter extends AbstractConverter {
 
   override def convertToString(source: Object, locale: Locale) = try {
     HttpPostConverter.cache(path_name, source.hashCode()) {
-      (service("/" + path_name) << "input" -> source).as_str
+      (service("/" + path_name) << Map("input" -> source)).as_str
     }  
   } catch { 
     case e => 
