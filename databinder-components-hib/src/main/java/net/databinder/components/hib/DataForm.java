@@ -206,7 +206,7 @@ public class DataForm<T> extends DataFormBase<T> {
 	 * Saves model's entity if it is not already contained in the session.
 	 * @return true if object was newly saved 
 	 */
-	protected boolean saveIfNew(HibernateObjectModel model) {
+	protected boolean saveIfNew(HibernateObjectModel<T> model) {
 		Session session = getHibernateSession();
 		if (!session.contains(model.getObject())) {
 			onBeforeSave(model);
@@ -226,7 +226,7 @@ public class DataForm<T> extends DataFormBase<T> {
 	 * entities, for example).
 	 * @param generally, the persistent model for this form (but subclasses may also call saveIfNew)
 	 */
-	protected void onBeforeSave(HibernateObjectModel model) { };
+	protected void onBeforeSave(HibernateObjectModel<T> model) { };
 
 	/**
 	 * Checks that the version number, if present, is the last known version number.
