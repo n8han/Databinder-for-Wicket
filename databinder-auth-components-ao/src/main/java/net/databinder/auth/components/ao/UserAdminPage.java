@@ -14,6 +14,7 @@ import net.databinder.models.ao.EntityModel;
 import org.apache.wicket.authorization.strategies.role.Roles;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.model.IModel;
 
 /**
  * User administration page. Lists all users, allows editing usernames, passwords, and roles.
@@ -56,15 +57,15 @@ public class UserAdminPage<T extends DataUserEntity<K>, K extends Serializable>
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void setPassword(String password) {
-		if (form.getEntityModel().isBound())
+		if (getUserForm().getEntityModel().isBound())
 			super.setPassword(password);
 		else
-			((Map)form.getModelObject()).put("passwordHash", UserHelper.getHash(password));
+			((Map)getUserForm().getModelObject()).put("passwordHash", UserHelper.getHash(password));
 	}
 
 	@Override
 	protected Button deleteButton(String id) {
-		return form.new DeleteButton(id);
+		return getUserForm().new DeleteButton(id);
 	}
 
 	@Override

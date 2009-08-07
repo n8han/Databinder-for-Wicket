@@ -3,6 +3,7 @@ package net.databinder.auth.components;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.zip.DataFormatException;
 
 import net.databinder.auth.AuthApplication;
 import net.databinder.auth.AuthSession;
@@ -48,6 +49,10 @@ import org.apache.wicket.model.ResourceModel;
 @AuthorizeInstantiation(Roles.ADMIN)
 public abstract class UserAdminPageBase<T extends DataUser> extends WebPage {
 	protected Form<T> form;
+	protected Form<T> getUserForm() {
+		return form;
+	}
+
 	public UserAdminPageBase() {
 		add(new DataStyleLink("css"));
 		add(new Label("title", new ResourceModel("data.auth.user_admin", "User Administration")));

@@ -40,13 +40,13 @@ public class UserAdminPage<T extends DataUser> extends UserAdminPageBase<T> {
 		return new Button("delete") {
 			@Override
 			public void onSubmit() {
-				Databinder.getHibernateSession().delete(form.getModelObject());
+				Databinder.getHibernateSession().delete(getUserForm().getModelObject());
 				Databinder.getHibernateSession().getTransaction().commit();
 				form.clearPersistentObject();
 			}
 			@Override
 			public boolean isEnabled() {
-				return !((AuthSession)getSession()).getUser().equals(form.getModelObject())
+				return !((AuthSession)getSession()).getUser().equals(getUserForm().getModelObject())
 					&& getBindingModel().isBound();
 			}
 		}.setDefaultFormProcessing(false);	
