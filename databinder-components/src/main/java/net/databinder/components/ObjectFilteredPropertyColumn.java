@@ -33,17 +33,17 @@ import org.apache.wicket.model.PropertyModel;
  * DataTable property filter column that works with joined entities instead of string properties.
  * @author Mark Southern
  */
-public class ObjectFilteredPropertyColumn<T> extends ChoiceFilteredPropertyColumn<T> {
-	private ChoiceRenderer<T> choiceRenderer;
+public class ObjectFilteredPropertyColumn<T, Y> extends ChoiceFilteredPropertyColumn<T, Y> {
+	private ChoiceRenderer<Y> choiceRenderer;
 	private String displayProperty;
 
-	public ObjectFilteredPropertyColumn(IModel<String> displayModel, String sortProperty, String displayProperty, String propertyExpression, String filterLabelProperty, IModel<List<? extends T>> filterChoices) {
+	public ObjectFilteredPropertyColumn(IModel<String> displayModel, String sortProperty, String displayProperty, String propertyExpression, String filterLabelProperty, IModel<List<? extends Y>> filterChoices) {
 		super(displayModel,sortProperty,propertyExpression,filterChoices);
-		choiceRenderer = new ChoiceRenderer<T>(filterLabelProperty);
+		choiceRenderer = new ChoiceRenderer<Y>(filterLabelProperty);
 		this.displayProperty = displayProperty;
 	}
 
-	protected IChoiceRenderer<T> getChoiceRenderer() {
+	protected IChoiceRenderer<Y> getChoiceRenderer() {
 		return choiceRenderer;
 	}
 

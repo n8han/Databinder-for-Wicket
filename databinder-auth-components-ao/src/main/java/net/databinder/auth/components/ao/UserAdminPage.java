@@ -57,7 +57,7 @@ public class UserAdminPage<T extends DataUserEntity<K>, K extends Serializable>
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void setPassword(String password) {
-		if (getUserForm().getEntityModel().isBound())
+		if (form.getEntityModel().isBound())
 			super.setPassword(password);
 		else
 			((Map)getUserForm().getModelObject()).put("passwordHash", UserHelper.getHash(password));
@@ -65,7 +65,7 @@ public class UserAdminPage<T extends DataUserEntity<K>, K extends Serializable>
 
 	@Override
 	protected Button deleteButton(String id) {
-		return getUserForm().new DeleteButton(id);
+		return form.new DeleteButton(id);
 	}
 
 	@Override
