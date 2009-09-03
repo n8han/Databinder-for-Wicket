@@ -16,7 +16,7 @@ import net.java.ao.RawEntity;
 import net.java.ao.schema.FieldNameConverter;
 
 public class EntityModel<T extends RawEntity<K>, K extends Serializable> 
-		extends LoadableWritableModel<T> implements BindingModel<T> {
+		extends LoadableWritableModel<Object> implements BindingModel<Object> {
 	private K id;
 	private Class<T> entityType;
 	private Map<String, Object> propertyStore;
@@ -41,17 +41,17 @@ public class EntityModel<T extends RawEntity<K>, K extends Serializable>
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	protected T load() {
+	protected Object load() {
 		if (isBound())
 			return Databinder.getEntityManager(managerKey).get(entityType, id);
-		return (T) getPropertyStore(); // umm...
+		return getPropertyStore();
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void setObject(T entity) {
+	public void setObject(Object entity) {
 		unbind();
-		entityType = (Class<T>) entity.getEntityType();
-		id = Common.getPrimaryKeyValue(entity);
+		entityType = (Class<T>) ((T)entity).getEntityType();
+		id = Common.getPrimaryKeyValue((T)entity);
 		setTempModelObject(entity);
 	}
 	
