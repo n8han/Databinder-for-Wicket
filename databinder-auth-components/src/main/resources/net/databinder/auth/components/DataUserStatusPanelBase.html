@@ -8,15 +8,15 @@
 <span wicket:id="signedInWrapper">
 	<span wicket:id="username">cook4all</span> 
 	| 
-	<a wicket:id="profile" href="#"><wicket:message key="data.auth.status.account">Account</wicket:message></a>
-	<wicket:enclosure>
+	<a wicket:id="profile" href="#"><span wicket:id="text">Account</span></a>
+	<wicket:enclosure child="admin">
 		| 
-		<a wicket:id="admin" href="#"><wicket:message key="data.auth.status.admin">Admin</wicket:message></a>
+		<a wicket:id="admin" href="#"><span wicket:id="text">Admin</span></a>
 	</wicket:enclosure>
 	| 
-	<a wicket:id="signOut" href="#"><wicket:message key="data.auth.status.sign_out">Sign out</wicket:message></a>
+	<a wicket:id="signOut" href="#"><span wicket:id="text">Sign out</span></a>
 </span>
-<a wicket:id="signIn" href="DataSignInPage.html"><wicket:message key="data.auth.status.sign_in">Sign in</wicket:message></a>
+<a wicket:id="signIn" href="DataSignInPage.html"><span wicket:id="text">Sign in</span></a>
 
 </wicket:panel>
 </body>

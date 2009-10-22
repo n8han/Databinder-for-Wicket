@@ -31,6 +31,7 @@ import org.apache.wicket.Page;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.Session;
 import org.apache.wicket.authorization.UnauthorizedInstantiationException;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
@@ -99,7 +100,13 @@ public abstract class DataSignInPageBase<T extends DataUser> extends WebPage {
 			public boolean isVisible() {
 				return profileLink.isEnabled();
 			}
-		}.add(profileLink = sourceList.new SourceLink("profileLink", profileSocket)));
+		}.add(
+			(profileLink = sourceList.new SourceLink("profileLink", profileSocket)).add(
+				new Label("text", getString("data.auth.register_link", null, "Register now"))
+			)
+		).add(
+			new Label("text", getString("data.auth.pre_register_link", null, "Don't have an account?"))
+		));
 		
 		add(signinSocket = signinSocket("signinSocket", returnPage));
 		add(new WebMarkupContainer("signinLinkWrapper") {
@@ -107,7 +114,11 @@ public abstract class DataSignInPageBase<T extends DataUser> extends WebPage {
 			public boolean isVisible() {
 				return signinLink.isEnabled();
 			}
-		}.add(signinLink = sourceList.new SourceLink("signinLink", signinSocket)));
+		}.add(
+			new Label("text", getString("data.auth.pre_sign_in_link", null, "Already have an account?"))
+		).add((signinLink = sourceList.new SourceLink("signinLink", signinSocket)).add(
+			new Label("text", getString("data.auth.sign_in_link", null, "Sign in"))
+		)));
 		signinLink.onClick();	// show sign in first
 	}
 	

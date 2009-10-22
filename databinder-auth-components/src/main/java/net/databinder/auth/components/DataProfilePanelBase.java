@@ -43,6 +43,7 @@ import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IChainingModel;
 import org.apache.wicket.model.IModel;
@@ -141,7 +142,11 @@ public abstract class DataProfilePanelBase<T extends DataUser> extends Panel {
 				public boolean isVisible() {
 					return !existing();
 				}
-			}.add(rememberMe = new CheckBox("rememberMe", new Model<Boolean>(Boolean.TRUE))));
+			}.add(
+				rememberMe = new CheckBox("rememberMe", new Model<Boolean>(Boolean.TRUE))
+			).add(
+				new Label("text", new ResourceModel("data.auth.remember", "Always sign in automatically"))
+			));
 			
 			add(lowFormSocket("lowFormSocket"));
 			

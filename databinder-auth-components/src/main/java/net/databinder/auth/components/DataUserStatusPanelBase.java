@@ -25,6 +25,7 @@ import net.databinder.auth.data.DataUser;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.authorization.strategies.role.Roles;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
@@ -70,7 +71,7 @@ public abstract class DataUserStatusPanelBase<T extends DataUser> extends Panel 
 					}
 				}));
 			}
-		});
+		}.add(new Label("text", getString("data.auth.status.account", null, "Account"))));
 
 		wrapper.add(new BookmarkablePageLink("admin", adminPageClass()) {
 			@Override
@@ -82,7 +83,7 @@ public abstract class DataUserStatusPanelBase<T extends DataUser> extends Panel 
 				T user = ((AuthSession<T>) getSession()).getUser();
 				return user != null && user.hasRole(Roles.ADMIN);
 			}
-		});
+		}.add(new Label("text", getString("data.auth.status.admin", null, "Admin"))));
 
 		wrapper.add(new Link("signOut") {
 			@Override
@@ -90,9 +91,9 @@ public abstract class DataUserStatusPanelBase<T extends DataUser> extends Panel 
 				getAuthSession().signOut();
 				setResponsePage(getApplication().getHomePage());
 			}
-		});
+		}.add(new Label("text", getString("data.auth.status.sign_out", null, "Sign out"))));
 
-		add(getSignInLink("signIn"));
+		add(getSignInLink("signIn").add(new Label("text", getString("data.auth.status.sign_in", null, "Sign in"))));
 	}
 	
 	/** 

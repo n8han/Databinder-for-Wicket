@@ -34,6 +34,7 @@ import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 
@@ -86,6 +87,7 @@ public class DataSignInPanel<T extends DataUser> extends Panel {
 			password.setLabel(new ResourceModel("data.auth.password", "Password"));
 			add(new SimpleFormComponentLabel("password-label", password));
 			add(rememberMe = new CheckBox("rememberMe", new Model<Boolean>(getRememberMeDefault())));
+			add(new Label("rememberMe-text", getString("data.auth.remember", null, "Always sign in automatically")));
 			
 			add(lowFormSocket("lowFormSocket"));
 		}

@@ -36,6 +36,7 @@ public abstract class DataProfilePageBase extends WebPage {
 	public DataProfilePageBase(ReturnPage returnPage) {
 		add(new Label("title", new ResourceModel("data.auth.title.update", "Update Account")));
 		add(new DataStyleLink("dataStylesheet"));
+		add(new Label("text", new ResourceModel("data.auth.update", "Update Account")));
 		add(profileSocket("profileSocket", returnPage));
 	}
 	/** @return component to appear as the body of this page. */
