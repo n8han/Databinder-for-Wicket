@@ -56,6 +56,7 @@ public abstract class UserAdminPageBase<T extends DataUser> extends WebPage {
 	public UserAdminPageBase() {
 		add(new DataStyleLink("css"));
 		add(new Label("title", new ResourceModel("data.auth.user_admin", "User Administration")));
+		add(new Label("heading", new ResourceModel("data.auth.user_admin", "User Administration")));
 		Class<T> userClass =  ((AuthApplication<T>) getApplication()).getUserClass();
 		
 		add(statusPanel("userStatus"));
@@ -91,6 +92,7 @@ public abstract class UserAdminPageBase<T extends DataUser> extends WebPage {
 		form.add(new SimpleFormComponentLabel("passwordConfirm-label", passwordConfirm));
 		form.add(passwordConfirm);
 		
+		form.add(new Label("roles-text", new ResourceModel("data.auth.roles", "Roles")));
 		form.add(new CheckBoxMultipleChoice<String>("roles", rolesModel(), new AbstractReadOnlyModel<List<? extends String>>() {
 			public List<String> getObject() {
 				return getRoleChoices();
@@ -103,7 +105,8 @@ public abstract class UserAdminPageBase<T extends DataUser> extends WebPage {
 
 		form.add(new FeedbackPanel("feedback"));
 		
-		add(new UnbindLink<T>("add", form, getBindingModel()));
+		add(new UnbindLink<T>("add", form, getBindingModel())
+			.add(new Label("text", new ResourceModel("data.auth.user_add", "Add new user"))));
 				
 		add(new ModelSourceListPanel<T>("users", form, "username", userList(userClass)));
 	}

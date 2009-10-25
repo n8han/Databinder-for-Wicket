@@ -9,11 +9,11 @@
 	adminuser | <a href="#">Sign out</a>
 </div>
 
-<h1><wicket:message key="data.auth.user_admin">User Administration</wicket:message></h1>
+<h1 wicket:id="heading">User Administration</h1>
 
 <body>
 	<div id="nav">
-		<p><a href="#" wicket:id="add"><wicket:message key="data.auth.user_add">Add new user</wicket:message></a></p>
+		<p><a href="#" wicket:id="add"><span wicket:id="text">Add new user</span></a></p>
 		<div wicket:id="users">
 			<ul class="source-list">
 				<li><a href="#">soandso83</a></li>
@@ -34,7 +34,7 @@
 				<label wicket:id="passwordConfirm-label">Retype password</label>
 				<input type="password" wicket:id="passwordConfirm"/>
 			</div>
-			<div><wicket:message key="data.auth.roles">Roles</wicket:message></div>
+			<div wicket:id="roles-text">Roles</div>
 			<div id="roles" wicket:id="roles">role</div>
 			<div wicket:id="lowForm"></div>
 			<div wicket:id="feedback" class="feedback"></div>
