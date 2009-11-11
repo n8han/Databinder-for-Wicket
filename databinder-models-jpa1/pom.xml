@@ -3,6 +3,7 @@
  <modelVersion>4.0.0</modelVersion>
  <artifactId>databinder-models-jpa1</artifactId>
  <name>Databinder models / JPA1</name>
+ 
  <parent>
   <groupId>net.databinder</groupId>
   <artifactId>databinder-parent</artifactId>
@@ -45,3 +46,4 @@
     </dependency>
  </dependencies>
 </project>
+
