@@ -40,8 +40,8 @@ import org.hibernate.ejb.HibernateEntityManager;
  */
 public class Databinder {
 
-  public static HibernateEntityManager getEntityManager(final String context) {
-    final EntityManager em = net.databinder.jpa.Databinder.getEntityManager(context);
+  public static HibernateEntityManager getEntityManager(final Object factoryKey) {
+    final EntityManager em = net.databinder.jpa.Databinder.getEntityManager(factoryKey.toString());
 
     if (em instanceof HibernateEntityManager) {
       return (HibernateEntityManager) em;
@@ -49,8 +49,8 @@ public class Databinder {
     throw new WicketRuntimeException("You cannot use " + Databinder.class.getCanonicalName() + " without a hibernate entity manager");
   }
 
-  public static Session getHibernateSession(final String context) {
-    return getEntityManager(context).getSession();
+  public static Session getHibernateSession(final Object factoryKey) {
+    return getEntityManager(factoryKey.toString()).getSession();
   }
 
 }

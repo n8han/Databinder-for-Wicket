@@ -37,5 +37,11 @@
    <artifactId>wicket-extensions</artifactId>
    <version>${wicket.version}</version>
   </dependency>
+  <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>3.4.0.GA</version>
+      <optional>true</optional>
+    </dependency>
  </dependencies>
 </project>
