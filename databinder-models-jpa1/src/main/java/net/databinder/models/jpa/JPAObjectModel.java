@@ -91,7 +91,7 @@ public class JPAObjectModel<T> extends LoadableWritableModel<T> implements Bindi
 	}
 
 	public Serializable getIdentifier() {
-	  throw new UnsupportedOperationException("Cannot get Id");
+	  return objectId;
 	}
 
 	/**
