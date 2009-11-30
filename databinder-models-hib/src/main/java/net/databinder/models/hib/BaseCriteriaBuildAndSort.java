@@ -29,7 +29,13 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Order;
 
-public class BaseCriteriaBuildAndSort implements OrderingCriteriaBuilder, Serializable {
+/**
+ * Abstract base class for building OrderedCriteriaBuilders. It handles the sorting.
+ * Subclasses should call super.buildUnordered() when overriding.
+ * 
+ * Avoids problems with duplicate Aliases by having all the Criteria building code in one location.
+ */
+public abstract class BaseCriteriaBuildAndSort implements OrderingCriteriaBuilder, Serializable {
 
 	protected Set<String> aliases = new HashSet<String>();
 

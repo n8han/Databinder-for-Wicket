@@ -29,15 +29,12 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 
 /**
- * Abstract base class for building OrderedCriteriaBuilders. It handles the sorting.
- * Subclasses should call super.buildUnordered() when overriding.
- * 
- * Avoids problems with duplicate Aliases by having all the Criteria building code in one location.
+ * Abstract base class for building OrderedCriteriaBuilders. Uses an ISortStateLocator to configure
+ * the sorting.  Subclasses should call super.buildUnordered() when overriding.
  * 
  * @author Mark Southern
  */
 public abstract class CriteriaBuildAndSort extends BaseCriteriaBuildAndSort implements ISortStateLocator {
-
 	private SingleSortState sortState = new SingleSortState();
 
 	public CriteriaBuildAndSort(final String defaultSortProperty, final boolean sortAscending, final boolean sortCased) {
