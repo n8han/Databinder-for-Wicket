@@ -39,24 +39,44 @@ import org.hibernate.validator.InvalidValue;
  * a usable model (see {@link DatabinderValidator#DatabinderValidator()}
  * at that time are ignored.
  * @author Nathan Hamblen
+ * @author Rodolfo Hansen
+ * @param <T> the model object type
  * @see DatabinderValidator
  */
 public class ValidDataForm<T> extends DataForm<T> {
-	/**
+
+  /** Hibernate Validator to use. */
+  private final ClassValidator<T> validator;
+
+	/** */
+  private static final long serialVersionUID = 1L;
+
+  /**
 	 * Instantiates this form and a new, blank instance of the given class as a persistent model
 	 * object. By default the model object created is serialized and retained between requests until
 	 * it is persisted.
-	 * @param id
+	 * @param id wicket:id
 	 * @param modelClass for the persistent object
 	 * @see HibernateObjectModel#setRetainUnsaved(boolean)
 	 */
-	public ValidDataForm(String id, Class<T> modelClass) {
-		super(id, modelClass);
+	public ValidDataForm(final String id, final Class<T> modelClass) {
+		this(id, modelClass, new ClassValidator<T>(modelClass));
 	}
 
-	public ValidDataForm(String id, HibernateObjectModel<T> model) {
+	public ValidDataForm(final String id, final Class<T> modelClass, final ClassValidator<T> validator) {
+    super(id, modelClass);
+    this.validator = validator;
+  }
+
+	public ValidDataForm(final String id, final HibernateObjectModel<T> model) {
 		super(id, model);
+		this.validator = null;
 	}
+
+	public ValidDataForm(final String id, final HibernateObjectModel<T> model, final ClassValidator<T> validator) {
+    super(id, model);
+    this.validator = validator;
+  }
 
 	/**
 	 * Instantiates this form with a persistent object of the given class and id.
@@ -64,26 +84,54 @@ public class ValidDataForm<T> extends DataForm<T> {
 	 * @param modelClass for the persistent object
 	 * @param persistentObjectId id of the persistent object
 	 */
-	public ValidDataForm(String id, Class<T> modelClass, Serializable persistentObjectId) {
-		super(id, modelClass, persistentObjectId);
+	public ValidDataForm(final String id, final Class<T> modelClass, final Serializable persistentObjectId) {
+		this(id, modelClass, persistentObjectId, new ClassValidator<T>(modelClass));
 	}
+
+	/**
+	 * Instantiates this form with a persistent object of the given class and id.
+   * @param id Wicket id
+   * @param modelClass for the persistent object
+   * @param persistentObjectId id of the persistent object
+	 * @param validator ClassValidator to use
+   */
+  public ValidDataForm(final String id, final Class<T> modelClass, final Serializable persistentObjectId, final ClassValidator<T> validator) {
+    super(id, modelClass, persistentObjectId);
+    this.validator = validator;
+  }
 
 	/**
 	 * Form that is nested below a component with a compound model containing a Hibernate
 	 * model.
-	 * @param id
+	 * @param id wicket:id
 	 */
-	public ValidDataForm(String id) {
+	public ValidDataForm(final String id) {
 		super(id);
+		this.validator = null;
 	}
-	
+
+	 /**
+   * Form that is nested below a component with a compound model containing a Hibernate
+   * model.
+   * @param id wicket:id
+	 * @param validator ClassValidator to use
+   */
+  public ValidDataForm(final String id, final ClassValidator<T> validator) {
+    super(id);
+    this.validator = validator;
+  }
+
 	@SuppressWarnings("unchecked")
 	protected void validateModelObject() {
-		Object o = getPersistentObjectModel().getObject();
-		for (InvalidValue iv : new ClassValidator(Hibernate.getClass(o)).getInvalidValues(o))
-			error(iv.getPropertyName() + " " + iv.getMessage());
+		final T o = getPersistentObjectModel().getObject();
+		ClassValidator<T> v = validator == null
+		    ?  v = new ClassValidator(Hibernate.getClass(o))
+        : validator;
+		for (final InvalidValue iv : v.getInvalidValues(o)) {
+      error(iv.getPropertyName() + " " + iv.getMessage());
+    }
 	}
-	
+
 	/**
 	 * Add a validator to any form components that have no existing validator
 	 * and whose model is recognized by {@link DatabinderValidator#addTo(FormComponent)}.
@@ -93,21 +141,25 @@ public class ValidDataForm<T> extends DataForm<T> {
 		super.onBeforeRender();
 		visitFormComponents(new FormComponent.AbstractVisitor() {
 			@Override
-			protected void onFormComponent(FormComponent formComponent) {
-				if (formComponent.getValidators().isEmpty()) try {
-					DatabinderValidator.addTo(formComponent);
-				} catch (UnrecognizedModelException e) { }
+			protected void onFormComponent(final FormComponent<?> formComponent) {
+				if (formComponent.getValidators().isEmpty()) {
+          try {
+          	DatabinderValidator.addTo(formComponent, validator);
+          } catch (final UnrecognizedModelException e) { }
+        }
 			}
 		});
 	}
-	
+
 	/**
 	 * @return dummy validator that can be used to exempt a component
 	 * from this form's inspection in {@link #onBeforeRender()}
 	 */
-	public static IValidator nonValidator() {
-		return new IValidator() {
-			public void validate(IValidatable validatable) { }
+	public static IValidator<?> nonValidator() {
+		return new IValidator<?>() {
+      private static final long serialVersionUID = 1L;
+
+      public void validate(final IValidatable<?> validatable) { }
 		};
 	}
 }

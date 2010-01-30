@@ -34,36 +34,72 @@ import org.hibernate.validator.InvalidValue;
 /**
  * Checks a base model and property name against Hibernate Validator.
  * @author Nathan Hamblen
+ * @author Rodolfo Hansen
+ *
+ * @param <T> Type parameter for the validator.
  */
-public class DatabinderValidator extends AbstractValidator implements IValidatorAddListener {
-	/** base model, may be null until first call to onValidate. */
-	private IModel base;
+public class DatabinderValidator<T> extends AbstractValidator<T> implements IValidatorAddListener {
+  private static final long serialVersionUID = 1L;
+
+  /** Hibernate ClassValidator to use. */
+  private ClassValidator<?> validator;
+
+  /** base model, may be null until first call to onValidate. */
+	private IModel<T> base;
 	/** property of base to validate, may be null until first call to onValidate. */
 	private String property;
 	/** component added to */
-	private Component component;
-	
+	private FormComponent<T> component;
+
+	/**
+	 * Validator for a property of an entity.
+	 * @param base entity to validate
+	 * @param property property of base to validate
+	 * @param validator validator to validate with
+	 */
+	public DatabinderValidator(final IModel<T> base, final String property, final ClassValidator<?> validator) {
+	  this.base = base;
+	  this.property = property;
+	  this.validator = validator;
+	}
+
 	/**
 	 * Validator for a property of an entity.
 	 * @param base entity to validate
 	 * @param property property of base to validate
 	 */
-	public DatabinderValidator(IModel base, String property) {
+	public DatabinderValidator(final IModel<T> base, final String property) {
 		this.base = base;
 		this.property = property;
 	}
-	
+
 	/**
 	 * Construct instance that attempts to determine the base object and property
 	 * to validate form the component it is added to. This is only possible for
-	 * components that depend on a parent CompoundPropertyModel or their own 
-	 * PropertyModels. The attempt is not made until the first validation check 
-	 * in {@link #onValidate(IValidatable)} (to allow the full component 
-	 * hierarchy to be constructed). Do not use an instance for more than 
+	 * components that depend on a parent CompoundPropertyModel or their own
+	 * PropertyModels. The attempt is not made until the first validation check
+	 * in {@link #onValidate(IValidatable)} (to allow the full component
+	 * hierarchy to be constructed). Do not use an instance for more than
 	 * one component.
 	 */
 	public DatabinderValidator() { }
-	
+
+	/** Gets the <tt>validator</tt>.
+   * @return the validator
+   */
+  public ClassValidator<?> getValidator() {
+    return validator;
+  }
+
+  /** Sets the <tt>validator</tt>.
+   * @param validator the validator to set
+   * @return the DatabinderValidator object (builder ideology).
+   */
+  public DatabinderValidator<?> setValidator(final ClassValidator<T> validator) {
+    this.validator = validator;
+    return this;
+  }
+
 	/**
 	 * Checks the component against Hibernate Validator. If the base model
 	 * and property were not supplied in the constructor, they will be determined
@@ -71,65 +107,92 @@ public class DatabinderValidator extends AbstractValidator implements IValidator
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	protected void onValidate(IValidatable comp) {
+	protected void onValidate(final IValidatable comp) {
 		if (base == null || property == null) {
-			ModelProp mp = getModelProp(component);
+			final ModelProp mp = getModelProp(component);
 			base = mp.model;
 			property = mp.prop;
 		}
-		Object o  = base.getObject();
-		Class c = Hibernate.getClass(o);
-		ClassValidator validator = new ClassValidator(c);
-		for (InvalidValue iv : validator.getPotentialInvalidValues(property, comp.getValue()))
-			comp.error(new ValidationError().setMessage(iv.getPropertyName() + " " + iv.getMessage()));
+		final Object o  = base.getObject();
+		if (validator == null) {
+		  final Class c = Hibernate.getClass(o);
+		  validator = new ClassValidator(c);
+		}
+		for (final InvalidValue iv : validator.getPotentialInvalidValues(property, comp.getValue())) {
+      comp.error(new ValidationError().setMessage(iv.getPropertyName() + " " + iv.getMessage()));
+    }
 	}
-	
-	/** Retains component for possible use in onValidate. */
-	public void onAdded(Component component) {
-		this.component = component;
+
+	/** Retains component for possible use in onValidate.
+	 * @param component component assigned to this validator. */
+	@SuppressWarnings("unchecked")
+  public void onAdded(final Component component) {
+		this.component = (FormComponent<T>) component;
 	}
-	
+
 	/** @return always true */
 	@Override
 	public boolean validateOnNullValue() {
 		return true;
 	}
-	
-	private static class ModelProp { IModel model; String prop; }
-	
+
+	private static class ModelProp<T> { IModel<T> model; String prop; }
+
 	/** @return base object and property derived from this component */
-	private static ModelProp getModelProp(Component formComponent) {
-		IModel model = formComponent.getDefaultModel();
-		ModelProp mp = new ModelProp();
+	@SuppressWarnings("unchecked")
+  private static <T> ModelProp<T> getModelProp(final FormComponent<T> formComponent) {
+		final IModel<T> model = formComponent.getModel();
+		final ModelProp<T> mp = new ModelProp<T>();
 		if (model instanceof PropertyModel) {
-			PropertyModel propModel = (PropertyModel) model;
-			mp.model = propModel.getChainedModel();
+			final PropertyModel<T> propModel = (PropertyModel<T>) model;
+			mp.model = (IModel<T>) propModel.getChainedModel();
 			mp.prop = propModel.getPropertyExpression();
 		} else if (model instanceof IWrapModel) {
 			mp.model = ((IWrapModel)model).getWrappedModel();
 			mp.prop = formComponent.getId();
-		} else throw new UnrecognizedModelException(formComponent, model);
+		} else {
+      throw new UnrecognizedModelException(formComponent, model);
+    }
 		return mp;
 	}
-	
+
 	/**
 	 * Add immediately to a form component. Note that the component's model
 	 * object must be available for inspection at this point or an exception will
 	 * be thrown. (For a CompoundPropertyModel, this means the hierarchy must
-	 * be established.) This is only possible for components that depend on a 
+	 * be established.) This is only possible for components that depend on a
 	 * parent CompoundPropertyModel or their own PropertyModels.
+	 * @param <T> Type Safe implementation for any given FormComponent.
 	 * @param formComponent component to add validator to
 	 * @throws UnrecognizedModelException if no usable model is present
 	 */
-	public static void addTo(FormComponent formComponent) {
-		ModelProp mp = getModelProp(formComponent);
-		formComponent.add(new DatabinderValidator(mp.model, mp.prop));
+	public static <T> void addTo(final FormComponent<T> formComponent) {
+		final ModelProp<T> mp = getModelProp(formComponent);
+		formComponent.add(new DatabinderValidator<T>(mp.model, mp.prop));
 	}
-	
+
+	 /**
+   * Add immediately to a form component. Note that the component's model
+   * object must be available for inspection at this point or an exception will
+   * be thrown. (For a CompoundPropertyModel, this means the hierarchy must
+   * be established.) This is only possible for components that depend on a
+   * parent CompoundPropertyModel or their own PropertyModels.
+   * @param <T> Type Safe implementation for any given FormComponent.
+   * @param formComponent component to add validator to
+	 * @param validator ClassValidator for the newly asigned instance
+   * @throws UnrecognizedModelException if no usable model is present
+   */
+  public static <T> void addTo(final FormComponent<T> formComponent, final ClassValidator<?> validator) {
+    final ModelProp<T> mp = getModelProp(formComponent);
+    formComponent.add(new DatabinderValidator<T>(mp.model, mp.prop, validator));
+  }
+
 	public static class UnrecognizedModelException extends RuntimeException {
-		public UnrecognizedModelException(Component formComponent, IModel model) {
-			super("DatabinderValidator doesn't recognize the model " 
-				+ model + " of component " + formComponent.toString()); 
+    private static final long serialVersionUID = 1L;
+
+    public UnrecognizedModelException(final Component formComponent, final IModel<?> model) {
+			super("DatabinderValidator doesn't recognize the model "
+				+ model + " of component " + formComponent.toString());
 		}
 	}
 }
