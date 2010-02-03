@@ -156,10 +156,10 @@ public class ValidDataForm<T> extends DataForm<T> {
 	 * from this form's inspection in {@link #onBeforeRender()}
 	 */
 	public static IValidator<?> nonValidator() {
-		return new IValidator<?>() {
+		return new IValidator<Object>() {
       private static final long serialVersionUID = 1L;
 
-      public void validate(final IValidatable<?> validatable) { }
+      public void validate(final IValidatable<Object> validatable) { }
 		};
 	}
 }
