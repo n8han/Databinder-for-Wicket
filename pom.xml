@@ -104,11 +104,16 @@
    </plugin>
   </plugins>
  </reporting>
+ <scm>
+  <url>http://github.com/kryptt/Databinder-for-Wicket</url>
+  <connection>scm:git:git://github.com/kryptt/Databinder-for-Wicket.git</connection>
+  <developerConnection>scm:git:ssh://kryptt@github.com/Databinder-for-Wicket.git</developerConnection>
+ </scm>
  <distributionManagement>
   <repository>
-   <id>databinder</id>
-   <name>Databinder repository</name>
-   <url>file:///var/dbwww/repo</url>
+    <id>com.kindleit.releases</id>
+    <name>Kindling Snapshots</name>
+    <url>dav:http://mvn.kitsd.com/ext-releases/</url>
   </repository>
   <snapshotRepository>
    <id>databinder-snapshots</id>
